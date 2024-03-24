@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<RepositoryUrl>https://github.com/OpenSourceKingdom/OSK.Functions.Outputs</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Provides a .NET mechanism for returning outputs or error information, with an ability to log outputs, to callers in a simple to use and consolidated way.</Description>
+		<PackageTags>OpenSourceKingdom, OpenSource, Functions, Outputs, Logging, Logger, Result, Error, Response, Abstraction</PackageTags>
+		<Authors>BlankDev117</Authors>
+		<Title>OSK.Functions.Outputs.Logging</Title>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\OSK.Functions.Outputs.Logging.Abstractions\OSK.Functions.Outputs.Logging.Abstractions.csproj" />
+	  <ProjectReference Include="..\OSK.Functions.Outputs\OSK.Functions.Outputs.csproj" />
+	</ItemGroup>
+
+</Project>
