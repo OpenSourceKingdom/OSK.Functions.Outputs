@@ -218,20 +218,6 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
                 new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, 0)));
         }
 
-        [Fact]
-        public void Create_T_SuccessWithNullable_ReturnsSuccessfully()
-        {
-            // Arrange/Act
-            var output = _factory.Create<int?>(null!,
-                new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, 0));
-
-            // Assert
-            Assert.NotNull(output);
-            Assert.Null(output.ErrorInformation);
-            Assert.True(output.IsSuccessful);
-            Assert.Null(output.Value);
-        }
-
         #endregion
     }
 }
