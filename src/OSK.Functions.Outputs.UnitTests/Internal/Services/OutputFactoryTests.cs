@@ -37,7 +37,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         public void Create_OutputStatusCode_VariousCodes_ThrowsExceptionOnExpectedBehavior(HttpStatusCode statusCode, bool shouldPass)
         {
             // Arrange
-            var code = new OutputStatusCode(statusCode, DetailCode.None, 0);
+            var code = new OutputStatusCode(statusCode, DetailCode.None, OutputStatusCode.DefaultSource);
 
             // Act/Assert
             if (shouldPass)
@@ -74,7 +74,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         {
             // Arrange/Act
             var output = _factory.Create(
-                new OutputStatusCode(HttpStatusCode.BadRequest, DetailCode.None, 0),
+                new OutputStatusCode(HttpStatusCode.BadRequest, DetailCode.None, OutputStatusCode.DefaultSource),
                 new List<Error>()
                 {
                     new Error("Hi")
@@ -104,7 +104,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         {
             // Arrange/Act
             var output = _factory.Create(
-                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, 0),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, OutputStatusCode.DefaultSource),
                 new ArgumentNullException("Hi"));
 
             // Assert
@@ -132,7 +132,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         public void Create_T_OutputStatusCode_VariousCodes_ThrowsExceptionOnExpectedBehavior(HttpStatusCode statusCode, bool shouldPass)
         {
             // Arrange
-            var code = new OutputStatusCode(statusCode, DetailCode.None, 0);
+            var code = new OutputStatusCode(statusCode, DetailCode.None, OutputStatusCode.DefaultSource);
 
             // Act/Assert
             if (shouldPass)
@@ -169,7 +169,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         {
             // Arrange/Act
             var output = _factory.Create<int>(
-                new OutputStatusCode(HttpStatusCode.BadRequest, DetailCode.None, 0),
+                new OutputStatusCode(HttpStatusCode.BadRequest, DetailCode.None, OutputStatusCode.DefaultSource),
                 new List<Error>()
                 {
                     new Error("Hi")
@@ -199,7 +199,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         {
             // Arrange/Act
             var output = _factory.Create<int>(
-                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, 0),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, OutputStatusCode.DefaultSource),
                 new ArgumentNullException("Hi"));
 
             // Assert
@@ -215,7 +215,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         {
             // Arrange/Act/Assert
             Assert.Throws<ArgumentNullException>(() => _factory.Create<object>(null!,
-                new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, 0)));
+                new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, OutputStatusCode.DefaultSource)));
         }
 
         #endregion

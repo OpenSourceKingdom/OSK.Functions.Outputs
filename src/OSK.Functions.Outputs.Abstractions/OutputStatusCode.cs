@@ -6,27 +6,29 @@ namespace OSK.Functions.Outputs.Abstractions
     {
         #region Static
 
-        public static readonly OutputStatusCode Success = new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, 0);
+        public static readonly OutputStatusCode Success = new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, DefaultSource);
 
         #endregion
 
         #region Variables
 
+        public const string DefaultSource = "None";
+
         public HttpStatusCode StatusCode { get; }
 
         public DetailCode DetailCode { get; }
 
-        public int OriginationSourceId { get; }
+        public string OriginationSource { get; }
 
         #endregion
 
         #region Constructors
 
-        public OutputStatusCode(HttpStatusCode statusCode, DetailCode detailCode, int originationSourceId)
+        public OutputStatusCode(HttpStatusCode statusCode, DetailCode detailCode, string originationSource = DefaultSource)
         {
             StatusCode = statusCode;
             DetailCode = detailCode;
-            OriginationSourceId = originationSourceId;
+            OriginationSource = originationSource;
         }
 
         #endregion
@@ -35,7 +37,7 @@ namespace OSK.Functions.Outputs.Abstractions
 
         public bool IsSuccessCode => StatusCode >= HttpStatusCode.OK && StatusCode < HttpStatusCode.MultipleChoices;
 
-        public override string ToString() => $"{(int)StatusCode}.{DetailCode}.{OriginationSourceId}";
+        public override string ToString() => $"{(int)StatusCode}.{DetailCode}";
 
         #endregion
     }
