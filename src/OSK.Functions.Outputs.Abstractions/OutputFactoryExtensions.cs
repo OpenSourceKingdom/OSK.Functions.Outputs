@@ -12,7 +12,7 @@ namespace OSK.Functions.Outputs.Abstractions
             return factory.Create(OutputStatusCode.Success);
         }
 
-        public static IOutput Success<TValue>(this IOutputFactory factory, TValue value)
+        public static IOutput<TValue> Success<TValue>(this IOutputFactory factory, TValue value)
         {
             return factory.Create(value, OutputStatusCode.Success);
         }
