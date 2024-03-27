@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSK.Functions.Outputs.Loggi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSK.Functions.Outputs.UnitTests", "OSK.Functions.Outputs.UnitTests\OSK.Functions.Outputs.UnitTests.csproj", "{FB88CB4C-CEE0-405E-A0BA-78ED50D81A16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSK.Functions.Outputs.Logging.Abstractions", "OSK.Functions.Outputs.Logging.Abstractions\OSK.Functions.Outputs.Logging.Abstractions.csproj", "{BC5C9531-8393-4C5F-A75C-43B09B4F174B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSK.Functions.Outputs.Logging.Abstractions", "OSK.Functions.Outputs.Logging.Abstractions\OSK.Functions.Outputs.Logging.Abstractions.csproj", "{BC5C9531-8393-4C5F-A75C-43B09B4F174B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSK.Functions.Outputs.Mocks", "OSK.Functions.Outputs.Mocks\OSK.Functions.Outputs.Mocks.csproj", "{1BE6526B-65E7-4EC0-AE36-C5A70D2CEB62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{BC5C9531-8393-4C5F-A75C-43B09B4F174B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC5C9531-8393-4C5F-A75C-43B09B4F174B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC5C9531-8393-4C5F-A75C-43B09B4F174B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BE6526B-65E7-4EC0-AE36-C5A70D2CEB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BE6526B-65E7-4EC0-AE36-C5A70D2CEB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BE6526B-65E7-4EC0-AE36-C5A70D2CEB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BE6526B-65E7-4EC0-AE36-C5A70D2CEB62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
