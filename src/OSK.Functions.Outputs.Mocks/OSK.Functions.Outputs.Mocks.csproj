@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\OSK.Functions.Outputs.Abstractions\OSK.Functions.Outputs.Abstractions.csproj" />
+		<ProjectReference Include="..\OSK.Functions.Outputs.Logging.Abstractions\OSK.Functions.Outputs.Logging.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>
