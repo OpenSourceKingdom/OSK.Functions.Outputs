@@ -7,6 +7,8 @@ namespace OSK.Functions.Outputs.Abstractions
 {
     public static class OutputFactoryExtensions
     {
+        #region Success
+
         public static IOutput Success(this IOutputFactory factory)
         {
             return factory.Create(OutputStatusCode.Success);
@@ -17,6 +19,10 @@ namespace OSK.Functions.Outputs.Abstractions
             return factory.Create(value, OutputStatusCode.Success);
         }
 
+        #endregion
+
+        #region BadRequest
+
         public static IOutput BadRequest(this IOutputFactory factory,
             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
@@ -57,7 +63,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 new Error[] { new Error(error) });
         }
 
-        public static IOutput BadRequest(this IOutputFactory factory, DetailCode detailCode, 
+        public static IOutput BadRequest(this IOutputFactory factory, DetailCode detailCode,
             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
@@ -65,7 +71,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 errors);
         }
 
-        public static IOutput<TValue> BadRequest<TValue>(this IOutputFactory factory, 
+        public static IOutput<TValue> BadRequest<TValue>(this IOutputFactory factory,
             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
@@ -81,8 +87,80 @@ namespace OSK.Functions.Outputs.Abstractions
                 errors);
         }
 
-        public static IOutput NotFound(this IOutputFactory factory,
+        #endregion
+
+        #region Conflict
+
+        public static IOutput Conflict(this IOutputFactory factory,
             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.Conflict, DetailCode.None, originationSource),
+                errors);
+        }
+
+        public static IOutput Conflict(this IOutputFactory factory,
+            string error, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.Conflict, DetailCode.None, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput Conflict(this IOutputFactory factory,
+            string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.Conflict, detailCode, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput<TValue> Conflict<TValue>(this IOutputFactory factory,
+            string error, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.Conflict, DetailCode.None, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput<TValue> Conflict<TValue>(this IOutputFactory factory,
+            string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.Conflict, detailCode, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput Conflict(this IOutputFactory factory, DetailCode detailCode,
+            IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.Conflict, detailCode, originationSource),
+                errors);
+        }
+
+        public static IOutput<TValue> Conflict<TValue>(this IOutputFactory factory,
+            IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.Conflict, DetailCode.None, originationSource),
+                errors);
+        }
+
+        public static IOutput<TValue> Conflict<TValue>(this IOutputFactory factory,
+            DetailCode detailCode, IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.Conflict, detailCode, originationSource),
+                errors);
+        }
+
+        #endregion
+
+        #region NotFound
+
+        public static IOutput NotFound(this IOutputFactory factory,
+             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
                 new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
@@ -113,7 +191,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 new Error[] { new Error(error) });
         }
 
-        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory, 
+        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
@@ -121,7 +199,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 errors);
         }
 
-        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory, 
+        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
             DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource, params Error[] errors)
         {
             return factory.Create<TValue>(
@@ -145,6 +223,83 @@ namespace OSK.Functions.Outputs.Abstractions
                 new Error[] { new Error(error) });
         }
 
+        #endregion
+
+        #region Error
+
+        public static IOutput Error(this IOutputFactory factory, HttpStatusCode statusCode,
+            IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(statusCode, DetailCode.None, originationSource),
+                errors);
+        }
+
+        public static IOutput Error(this IOutputFactory factory,
+            HttpStatusCode statusCode, string error, 
+            string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(statusCode, DetailCode.None, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput Error(this IOutputFactory factory, HttpStatusCode statusCode,
+            string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(statusCode, detailCode, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput<TValue> Error<TValue>(this IOutputFactory factory, HttpStatusCode statusCode,
+            string error, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(statusCode, DetailCode.None, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput<TValue> Error<TValue>(this IOutputFactory factory,
+            HttpStatusCode statusCode, string error, 
+            DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(statusCode, detailCode, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput Error(this IOutputFactory factory, HttpStatusCode statusCode,
+            DetailCode detailCode, IEnumerable<Error> errors, 
+            string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(statusCode, detailCode, originationSource),
+                errors);
+        }
+
+        public static IOutput<TValue> Error<TValue>(this IOutputFactory factory,
+            HttpStatusCode statusCode, IEnumerable<Error> errors,
+            string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(statusCode, DetailCode.None, originationSource),
+                errors);
+        }
+
+        public static IOutput<TValue> Error<TValue>(this IOutputFactory factory,
+            HttpStatusCode statusCode, DetailCode detailCode,
+            IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(statusCode, detailCode, originationSource),
+                errors);
+        }
+
+        #endregion
+
+        #region Exception
+
         public static IOutput Exception(this IOutputFactory factory,
             Exception ex, string originationSource = OutputStatusCode.DefaultSource)
         {
@@ -161,7 +316,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 ex);
         }
 
-        public static IOutput<TValue> Exception<TValue>(this IOutputFactory factory, Exception ex, 
+        public static IOutput<TValue> Exception<TValue>(this IOutputFactory factory, Exception ex,
             string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
@@ -177,6 +332,10 @@ namespace OSK.Functions.Outputs.Abstractions
                 ex);
         }
 
+        #endregion
+
+        #region Paginated
+
         public static IOutput<PaginatedOutput<TValue>> Paginated<TValue>(this IOutputFactory factory,
             IEnumerable<TValue> items, long skip, long take, long? total)
         {
@@ -190,5 +349,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 },
                 OutputStatusCode.Success);
         }
+
+        #endregion
     }
 }
