@@ -127,7 +127,7 @@ namespace OSK.Functions.Outputs.Abstractions
             string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
-                new OutputStatusCode(HttpStatusCode.BadRequest, detailCode, originationSource),
+                new OutputStatusCode(HttpStatusCode.Conflict, detailCode, originationSource),
                 new Error[] { new Error(error) });
         }
 
