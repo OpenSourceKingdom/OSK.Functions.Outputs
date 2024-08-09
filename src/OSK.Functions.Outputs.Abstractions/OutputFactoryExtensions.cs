@@ -89,6 +89,74 @@ namespace OSK.Functions.Outputs.Abstractions
 
         #endregion
 
+        #region NotFound
+
+        public static IOutput NotFound(this IOutputFactory factory,
+             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                errors);
+        }
+
+        public static IOutput NotFound(this IOutputFactory factory,
+            DetailCode detailCode, IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.NotFound, detailCode, originationSource),
+                errors);
+        }
+
+        public static IOutput NotFound(this IOutputFactory factory,
+            string error, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput NotFound(this IOutputFactory factory,
+            string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create(
+                new OutputStatusCode(HttpStatusCode.NotFound, detailCode, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+            IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                errors);
+        }
+
+        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+            DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource, params Error[] errors)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.NotFound, detailCode, originationSource),
+                errors);
+        }
+
+        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+            string error, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+            string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
+        {
+            return factory.Create<TValue>(
+                new OutputStatusCode(HttpStatusCode.NotFound, detailCode, originationSource),
+                new Error[] { new Error(error) });
+        }
+
+        #endregion
+
         #region Conflict
 
         public static IOutput Conflict(this IOutputFactory factory,
@@ -157,33 +225,33 @@ namespace OSK.Functions.Outputs.Abstractions
 
         #endregion
 
-        #region NotFound
+        #region InternalServerError
 
-        public static IOutput NotFound(this IOutputFactory factory,
+        public static IOutput InternalServerError(this IOutputFactory factory,
              IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
-                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, originationSource),
                 errors);
         }
 
-        public static IOutput NotFound(this IOutputFactory factory,
+        public static IOutput InternalServerError(this IOutputFactory factory,
             DetailCode detailCode, IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
-                new OutputStatusCode(HttpStatusCode.NotFound, detailCode, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, detailCode, originationSource),
                 errors);
         }
 
-        public static IOutput NotFound(this IOutputFactory factory,
+        public static IOutput InternalServerError(this IOutputFactory factory,
             string error, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
-                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, originationSource),
                 new Error[] { new Error(error) });
         }
 
-        public static IOutput NotFound(this IOutputFactory factory,
+        public static IOutput InternalServerError(this IOutputFactory factory,
             string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
@@ -191,7 +259,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 new Error[] { new Error(error) });
         }
 
-        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+        public static IOutput<TValue> InternalServerError<TValue>(this IOutputFactory factory,
             IEnumerable<Error> errors, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
@@ -199,7 +267,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 errors);
         }
 
-        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+        public static IOutput<TValue> InternalServerError<TValue>(this IOutputFactory factory,
             DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource, params Error[] errors)
         {
             return factory.Create<TValue>(
@@ -207,19 +275,19 @@ namespace OSK.Functions.Outputs.Abstractions
                 errors);
         }
 
-        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+        public static IOutput<TValue> InternalServerError<TValue>(this IOutputFactory factory,
             string error, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
-                new OutputStatusCode(HttpStatusCode.NotFound, DetailCode.None, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, originationSource),
                 new Error[] { new Error(error) });
         }
 
-        public static IOutput<TValue> NotFound<TValue>(this IOutputFactory factory,
+        public static IOutput<TValue> InternalServerError<TValue>(this IOutputFactory factory,
             string error, DetailCode detailCode, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
-                new OutputStatusCode(HttpStatusCode.NotFound, detailCode, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, detailCode, originationSource),
                 new Error[] { new Error(error) });
         }
 
@@ -304,7 +372,7 @@ namespace OSK.Functions.Outputs.Abstractions
             Exception ex, string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create(
-                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.Exception, originationSource),
                 ex);
         }
 
@@ -320,7 +388,7 @@ namespace OSK.Functions.Outputs.Abstractions
             string originationSource = OutputStatusCode.DefaultSource)
         {
             return factory.Create<TValue>(
-                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, originationSource),
+                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.Exception, originationSource),
                 ex);
         }
 
