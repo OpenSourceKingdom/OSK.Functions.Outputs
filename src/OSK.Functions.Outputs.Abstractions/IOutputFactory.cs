@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using OSK.Hexagonal.MetaData;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
+    [HexagonalPort(HexagonalPort.Primary)]
     public interface IOutputFactory
     {
         IOutput Create(OutputStatusCode statusCode);
