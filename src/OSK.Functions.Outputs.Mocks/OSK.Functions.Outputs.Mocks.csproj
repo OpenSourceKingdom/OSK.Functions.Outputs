@@ -2,16 +2,9 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<RepositoryUrl>https://github.com/OpenSourceKingdom/OSK.Functions.Outputs</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
 		<Description>An implementation for OSK.Functions.Outputs meant mainly for unit testing purposes</Description>
 		<PackageTags>OpenSourceKingdom, OpenSource, Functions, Outputs, Result, Error, Response, UnitTests</PackageTags>
-		<Authors>BlankDev117</Authors>
 		<Title>OSK.Functions.Outputs.Mocks</Title>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>
