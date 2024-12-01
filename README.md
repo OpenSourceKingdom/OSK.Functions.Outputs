@@ -12,7 +12,7 @@ project.
  The central focal point to this library is the `IOutputFactory` and `IOutputFactory<T>` objects. By adding a dependency to the `Outputs.Logging` or base `Outputs`,
  an application will gain access to the functionality through dependency injection. `IOutputFactory` is a basic implementation that avoids a dependency on 
  Microsoft's Logging mechanism, while `IOutputFactory<T>` will use an ILogger to record error responses. Some useful shortcuts to creating outputs can be found in the
- `OutputFactoryExtensions`. 
+ `OutputFactoryExtensions`. Callers can add the dependency by using `AddFunctionOutputs` or `AddLoggingFunctionOutputs` functions on a service collection.
  
 Notes:
  ** The internal logic will prevent creating an error output that has error information attached (i.e. exception data, error strings, etc.)

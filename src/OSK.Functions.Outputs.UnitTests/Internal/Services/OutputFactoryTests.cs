@@ -84,7 +84,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
             Assert.NotNull(output);
             Assert.False(output.IsSuccessful);
             Assert.NotNull(output.ErrorInformation);
-            Assert.True(output.ErrorInformation!.Value.Errors.First().Message.Equals("Hi"));
+            Assert.Equal("Hi", output.ErrorInformation!.Value.Errors.First().Message);
         }
 
         #endregion
@@ -179,7 +179,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
             Assert.NotNull(output);
             Assert.False(output.IsSuccessful);
             Assert.NotNull(output.ErrorInformation);
-            Assert.True(output.ErrorInformation!.Value.Errors.First().Message.Equals("Hi"));
+            Assert.Equal("Hi", output.ErrorInformation!.Value.Errors.First().Message);
         }
 
         #endregion

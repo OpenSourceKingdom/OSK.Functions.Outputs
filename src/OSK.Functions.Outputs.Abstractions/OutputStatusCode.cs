@@ -71,7 +71,7 @@ namespace OSK.Functions.Outputs.Abstractions
         }
 
         #endregion
-
+        
         #region Helpers
 
         public bool IsSuccessCode => StatusCode >= HttpStatusCode.OK && StatusCode < HttpStatusCode.MultipleChoices;
