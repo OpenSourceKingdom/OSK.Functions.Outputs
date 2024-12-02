@@ -6,9 +6,18 @@
 		<Description>Provides an abstraction for a .NET mechanism that returns outputs or error information, with an ability for logging outputs, to callers in a simple to use and consolidated way.</Description>
 		<PackageTags>OpenSourceKingdom, OpenSource, Functions, Outputs, Logging, Logger Result, Error, Response, Abstraction</PackageTags>
 		<Title>OSK.Functions.Outputs.Logging.Abstractions</Title>
+
+		<RepositoryUrl>https://github.com/OpenSourceKingdom/OSK.Functions.Outputs</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>CS1591</NoWarn>
+		<Authors>BlankDev117</Authors>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\"/>
 		<ProjectReference Include="..\OSK.Functions.Outputs.Abstractions\OSK.Functions.Outputs.Abstractions.csproj" />
 	</ItemGroup>
 
