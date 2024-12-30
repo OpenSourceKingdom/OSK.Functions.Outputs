@@ -31,6 +31,11 @@ namespace OSK.Functions.Outputs.Abstractions
         /// <returns>The supported conversion to <see cref="HttpStatusCode"/> or <see cref="HttpStatusCode.NotImplemented"/> if not supported.</returns>
         public static HttpStatusCode AsStatusCode(this IOutput output)
         {
+            if (output.Details.Result == FunctionResult.MultipleResults)
+            {
+                return HttpStatusCode.MultiStatus;
+            }
+
             return output.Details.SpecificityCode switch
             {
                 ResultSpecificityCode.Created => HttpStatusCode.Created,
@@ -39,7 +44,7 @@ namespace OSK.Functions.Outputs.Abstractions
                 ResultSpecificityCode.Deleted => HttpStatusCode.NoContent,
                 ResultSpecificityCode.BadGateway => HttpStatusCode.BadGateway,
                 ResultSpecificityCode.DuplicateData => HttpStatusCode.Conflict,
-                ResultSpecificityCode.DataNotFound => HttpStatusCode.NotFound,
+                ResultSpecificityCode.ResourceNotFound => HttpStatusCode.NotFound,
                 ResultSpecificityCode.NotAuthenticated => HttpStatusCode.Unauthorized,
                 ResultSpecificityCode.InsufficientPermissions => HttpStatusCode.Forbidden,
                 ResultSpecificityCode.InvalidData => HttpStatusCode.BadRequest,
