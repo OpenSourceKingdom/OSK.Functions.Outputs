@@ -4,19 +4,11 @@ using OSK.Hexagonal.MetaData;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    [HexagonalPort(HexagonalPort.Primary)]
+    [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
     public interface IOutputFactory
     {
-        IOutput Create(OutputStatusCode statusCode);
+        IOutput Create(OutputInformation outputInformation);
 
-        IOutput Create(OutputStatusCode statusCode, IEnumerable<Error> errors);
-
-        IOutput Create(OutputStatusCode statusCode, Exception ex);
-
-        IOutput<TValue> Create<TValue>(TValue value, OutputStatusCode statusCode);
-
-        IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, IEnumerable<Error> errors);
-
-        IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, Exception ex);
+        IOutput<TValue> Create<TValue>(TValue value, OutputInformation outputInformation);
     }
 }

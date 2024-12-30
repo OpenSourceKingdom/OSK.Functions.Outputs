@@ -2,7 +2,7 @@
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    [HexagonalPort(HexagonalPort.Primary)]
+    [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
     public interface IOutput<TValue>: IOutput
     {
         TValue Value { get; }

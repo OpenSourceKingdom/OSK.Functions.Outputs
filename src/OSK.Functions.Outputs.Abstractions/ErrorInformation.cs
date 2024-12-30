@@ -28,7 +28,6 @@ namespace OSK.Functions.Outputs.Abstractions
             Exception = null;
         }
 
-
         #endregion
     }
 }

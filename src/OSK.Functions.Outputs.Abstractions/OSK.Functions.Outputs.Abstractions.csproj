@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>		
-		<PackageReference Include="OSK.Hexagonal.MetaData" Version="0.0.1" />
+		<PackageReference Include="OSK.Hexagonal.MetaData" Version="0.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

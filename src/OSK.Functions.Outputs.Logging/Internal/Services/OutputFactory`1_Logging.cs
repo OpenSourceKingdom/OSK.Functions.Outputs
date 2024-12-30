@@ -32,16 +32,16 @@ namespace OSK.Functions.Outputs.Logging.Internal.Services
                     0,
                     output.ErrorInformation.Value.Exception,
                     "Output Failed. Status: {code} Reason: {errorMessage}",
-                    output.Code, output.GetErrorString("\r\n"));
+                    output.Details, output.GetErrorString("\r\n"));
             }
             else
             {
-                LogSuccess(output.Code);
+                LogSuccess(output.Details);
             }
         }
 
-        [LoggerMessage(eventId: 1, LogLevel.Information, "Successful output. Status: {code}")]
-        private partial void LogSuccess(OutputStatusCode code);
+        [LoggerMessage(eventId: 1, LogLevel.Debug, "Successful output. Status: {code}")]
+        private partial void LogSuccess(OutputDetails code);
 
         #endregion
     }

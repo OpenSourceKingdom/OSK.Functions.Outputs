@@ -6,9 +6,9 @@ namespace OSK.Functions.Outputs.Models
     {
         #region Constructors
 
-        internal Output(OutputStatusCode statusCode, ErrorInformation? errorInformation)
+        internal Output(OutputDetails details, ErrorInformation? errorInformation)
         {
-            Code = statusCode;
+            Details = details;
             ErrorInformation = errorInformation;
         }
 
@@ -16,11 +16,11 @@ namespace OSK.Functions.Outputs.Models
 
         #region IOutput
 
-        public OutputStatusCode Code { get; }
+        public OutputDetails Details { get; }
 
         public ErrorInformation? ErrorInformation { get; }
 
-        public virtual IOutput<TValue> AsType<TValue>()
+        public virtual IOutput<TValue> AsOutput<TValue>()
         {
             return new Output<TValue>(this);
         }

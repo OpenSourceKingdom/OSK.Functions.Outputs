@@ -9,7 +9,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
     {
         #region Variables
 
-        private readonly IOutputFactory _factory;
+        private readonly OutputFactory _factory;
 
         #endregion
 
@@ -22,200 +22,149 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
 
         #endregion
 
-        #region Create(OutputStatusCode)
+        #region Create(OutputInformation)
+
+        [Fact]
+        public void Create_OutputInformation_NullInformation_ThrowsArgumentNullException()
+        {
+            // Arrange/Act/Assert
+            Assert.Throws<ArgumentNullException>(() => _factory.Create(null));
+        }
 
         [Theory]
-        [InlineData(HttpStatusCode.Created, true)] // 200s
-        [InlineData(HttpStatusCode.OK, true)]
-        [InlineData(HttpStatusCode.Accepted, true)]
-        [InlineData(HttpStatusCode.Ambiguous, false)] // 300s
-        [InlineData(HttpStatusCode.RedirectMethod, false)]
-        [InlineData(HttpStatusCode.NotFound, false)] // 400s
-        [InlineData(HttpStatusCode.BadRequest, false)]
-        [InlineData(HttpStatusCode.InternalServerError, false)] // 500s
-        [InlineData(HttpStatusCode.NotImplemented, false)]
-        public void Create_OutputStatusCode_VariousCodes_ThrowsExceptionOnExpectedBehavior(HttpStatusCode statusCode, bool shouldPass)
+        [InlineData(FunctionResult.Error)]
+        [InlineData(FunctionResult.Failed)]
+        public void Create_OutputInformation_ErrorResults_NoErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
         {
             // Arrange
-            var code = new OutputStatusCode(statusCode, DetailCode.None, OutputStatusCode.DefaultSource);
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, null, OutputDetails.DefaultSource);
 
             // Act/Assert
-            if (shouldPass)
-            {
-                var output = _factory.Create(code);
-                Assert.NotNull(output);
-                Assert.True(output.IsSuccessful);
-                Assert.Null(output.ErrorInformation);
-                Assert.Equal(statusCode, output.Code.StatusCode);
-            }
-            else
-            {
-                Assert.Throws<InvalidOperationException>(() => _factory.Create(code));
-            }
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
         }
-
-        #endregion
-
-        #region Create(OutputStatusCode, IEnumerable<Error>)
-
-        [Fact]
-        public void Create_Errors_SuccessCodeWithErrors_ThrowsInvalidOperationException()
-        {
-            // Arrange/Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(OutputStatusCode.Success,
-                new List<Error>()
-                {
-                    new Error("Hi")
-                }));
-        }
-
-        [Fact]
-        public void Create_Errors_NonSuccessCodeWithErrors_ReturnsSuccessfully()
-        {
-            // Arrange/Act
-            var output = _factory.Create(
-                new OutputStatusCode(HttpStatusCode.BadRequest, DetailCode.None, OutputStatusCode.DefaultSource),
-                new List<Error>()
-                {
-                    new Error("Hi")
-                });
-
-            // Assert
-            Assert.NotNull(output);
-            Assert.False(output.IsSuccessful);
-            Assert.NotNull(output.ErrorInformation);
-            Assert.Equal("Hi", output.ErrorInformation!.Value.Errors.First().Message);
-        }
-
-        #endregion
-
-        #region Create(OutputStatusCode, Exception)
-
-        [Fact]
-        public void Create_Exception_SuccessCodeWithException_ThrowsInvalidOperationException()
-        {
-            // Arrange/Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(OutputStatusCode.Success,
-                new ArgumentNullException("Hi")));
-        }
-
-        [Fact]
-        public void Create_Exception_NonSuccessCodeWithException_ReturnsSuccessfully()
-        {
-            // Arrange/Act
-            var output = _factory.Create(
-                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, OutputStatusCode.DefaultSource),
-                new ArgumentNullException("Hi"));
-
-            // Assert
-            Assert.NotNull(output);
-            Assert.False(output.IsSuccessful);
-            Assert.NotNull(output.ErrorInformation?.Exception);
-            Assert.True(output.ErrorInformation!.Value.Exception is ArgumentNullException);
-            Assert.Contains("Hi", output.ErrorInformation!.Value.Exception.Message);
-        }
-
-        #endregion
-
-        #region Create<T>(OutputStatusCode)
 
         [Theory]
-        [InlineData(HttpStatusCode.Created, true)] // 200s
-        [InlineData(HttpStatusCode.OK, true)]
-        [InlineData(HttpStatusCode.Accepted, true)]
-        [InlineData(HttpStatusCode.Ambiguous, false)] // 300s
-        [InlineData(HttpStatusCode.RedirectMethod, false)]
-        [InlineData(HttpStatusCode.NotFound, false)] // 400s
-        [InlineData(HttpStatusCode.BadRequest, false)]
-        [InlineData(HttpStatusCode.InternalServerError, false)] // 500s
-        [InlineData(HttpStatusCode.NotImplemented, false)]
-        public void Create_T_OutputStatusCode_VariousCodes_ThrowsExceptionOnExpectedBehavior(HttpStatusCode statusCode, bool shouldPass)
+        [InlineData(FunctionResult.Success)]
+        [InlineData(FunctionResult.MultipleResults)]
+        public void Create_OutputInformation_SuccessResults_HasErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
         {
             // Arrange
-            var code = new OutputStatusCode(statusCode, DetailCode.None, OutputStatusCode.DefaultSource);
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, new ErrorInformation(), OutputDetails.DefaultSource);
 
             // Act/Assert
-            if (shouldPass)
-            {
-                var output = _factory.Create(1, code);
-                Assert.NotNull(output);
-                Assert.True(output.IsSuccessful);
-                Assert.Null(output.ErrorInformation);
-                Assert.Equal(statusCode, output.Code.StatusCode);
-            }
-            else
-            {
-                Assert.Throws<InvalidOperationException>(() => _factory.Create(1, code));
-            }
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
         }
 
-        #endregion
-
-        #region Create<T>(OutputStatusCode, IEnumerable<Error>)
-
-        [Fact]
-        public void Create_T_Errors_SuccessCodeWithErrors_ThrowsInvalidOperationException()
+        [Theory]
+        [InlineData(FunctionResult.Failed)]
+        [InlineData(FunctionResult.Error)]
+        public void Create_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
         {
-            // Arrange/Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create<int>(OutputStatusCode.Success,
-                new List<Error>()
-                {
-                    new Error("Hi")
-                }));
-        }
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.DataNotFound, new ErrorInformation(), OutputDetails.DefaultSource);
 
-        [Fact]
-        public void Create_T_Errors_NonSuccessCodeWithErrors_ReturnsSuccessfully()
-        {
-            // Arrange/Act
-            var output = _factory.Create<int>(
-                new OutputStatusCode(HttpStatusCode.BadRequest, DetailCode.None, OutputStatusCode.DefaultSource),
-                new List<Error>()
-                {
-                    new Error("Hi")
-                });
+            // Act
+            var output = _factory.Create(outputInformation);
 
             // Assert
-            Assert.NotNull(output);
             Assert.False(output.IsSuccessful);
             Assert.NotNull(output.ErrorInformation);
-            Assert.Equal("Hi", output.ErrorInformation!.Value.Errors.First().Message);
+            Assert.Equal(functionResult, output.Details.Result);
+            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
+            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Success)]
+        [InlineData(FunctionResult.MultipleResults)]
+        public void Create_OutputInformation_SuccessResults_NoErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.Accepted, null, OutputDetails.DefaultSource);
+
+            // Act
+            var output = _factory.Create(outputInformation);
+
+            // Assert
+            Assert.True(output.IsSuccessful);
+            Assert.Null(output.ErrorInformation);
+            Assert.Equal(functionResult, output.Details.Result);
+            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
+            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
         }
 
         #endregion
 
-        #region Create<T>(OutputStatusCode, Exception)
+        #region Create(Value, OutputInformation)
 
         [Fact]
-        public void Create_T_Exception_SuccessCodeWithException_ThrowsInvalidOperationException()
+        public void Create_Value_OutputInformation_NullInformation_ThrowsArgumentNullException()
         {
             // Arrange/Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create<int>(OutputStatusCode.Success,
-                new ArgumentNullException("Hi")));
+            Assert.Throws<ArgumentNullException>(() => _factory.Create(1, null));
         }
 
-        [Fact]
-        public void Create_T_Exception_NonSuccessCodeWithException_ReturnsSuccessfully()
+        [Theory]
+        [InlineData(FunctionResult.Error)]
+        [InlineData(FunctionResult.Failed)]
+        public void Create_Value_OutputInformation_ErrorResults_NoErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
         {
-            // Arrange/Act
-            var output = _factory.Create<int>(
-                new OutputStatusCode(HttpStatusCode.InternalServerError, DetailCode.None, OutputStatusCode.DefaultSource),
-                new ArgumentNullException("Hi"));
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, null, OutputDetails.DefaultSource);
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Success)]
+        [InlineData(FunctionResult.MultipleResults)]
+        public void Create_Value_OutputInformation_SuccessResults_HasErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, new ErrorInformation(), OutputDetails.DefaultSource);
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Failed)]
+        [InlineData(FunctionResult.Error)]
+        public void Create_Value_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.DataNotFound, new ErrorInformation(), OutputDetails.DefaultSource);
+
+            // Act
+            var output = _factory.Create(default(int), outputInformation);
 
             // Assert
-            Assert.NotNull(output);
             Assert.False(output.IsSuccessful);
-            Assert.NotNull(output.ErrorInformation?.Exception);
-            Assert.True(output.ErrorInformation!.Value.Exception is ArgumentNullException);
-            Assert.Contains("Hi", output.ErrorInformation!.Value.Exception.Message);
+            Assert.NotNull(output.ErrorInformation);
+            Assert.Equal(functionResult, output.Details.Result);
+            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
+            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
         }
 
-        [Fact]
-        public void Create_T_SuccessWithoutValue_ThrowsInvalidOperationException()
+        [Theory]
+        [InlineData(FunctionResult.Success)]
+        [InlineData(FunctionResult.MultipleResults)]
+        public void Create_Value_OutputInformation_SuccessResults_NoErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
         {
-            // Arrange/Act/Assert
-            Assert.Throws<ArgumentNullException>(() => _factory.Create<object>(null!,
-                new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, OutputStatusCode.DefaultSource)));
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.Accepted, null, OutputDetails.DefaultSource);
+
+            // Act
+            var output = _factory.Create(1, outputInformation);
+
+            // Assert
+            Assert.True(output.IsSuccessful);
+            Assert.Null(output.ErrorInformation);
+            Assert.Equal(1, output.Value);
+            Assert.Equal(functionResult, output.Details.Result);
+            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
+            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
         }
 
         #endregion

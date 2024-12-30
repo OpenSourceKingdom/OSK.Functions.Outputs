@@ -5,15 +5,15 @@ namespace OSK.Functions.Outputs.Abstractions
     /// <summary>
     /// A simple output object for a function
     /// </summary>
-    [HexagonalPort(HexagonalPort.Primary)]
+    [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
     public interface IOutput
     {
-        bool IsSuccessful => Code.IsSuccessCode;
+        bool IsSuccessful => Details.IsSuccessful;
 
         /// <summary>
         /// Contains non-error related information for a response response
         /// </summary>
-        OutputStatusCode Code { get; }
+        OutputDetails Details { get; }
 
         /// <summary>
         /// Specific error information that is only set in the event a response from a function is unsuccessful
@@ -25,6 +25,6 @@ namespace OSK.Functions.Outputs.Abstractions
         /// </summary>
         /// <typeparam name="TValue">The type of object this output should represent</typeparam>
         /// <returns>A type casted output</returns>
-        IOutput<TValue> AsType<TValue>();
+        IOutput<TValue> AsOutput<TValue>();
     }
 }

@@ -10,46 +10,18 @@ namespace OSK.Functions.Outputs.Logging.Internal.Services
     {
         #region IOutputFactory
 
-        public override IOutput Create(OutputStatusCode statusCode)
+        public override IOutput Create(OutputInformation outputInformation)
         {
-            var output = base.Create(statusCode);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
+            var output = base.Create(outputInformation);
+            LogOutput(output);
 
             return output;
         }
 
-        public override IOutput Create(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public override IOutput<TValue> Create<TValue>(TValue value, OutputInformation outputInformation)
         {
-            var output = base.Create(statusCode, errors);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
-
-            return output;
-        }
-
-        public override IOutput Create(OutputStatusCode statusCode, Exception ex)
-        {
-            var output = base.Create(statusCode, ex);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
-
-            return output;
-        }
-
-        public override IOutput<TValue> Create<TValue>(TValue value, OutputStatusCode statusCode)
-        {
-            var output = base.Create(value, statusCode);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
+            var output = base.Create(value, outputInformation);
+            LogOutput(output);
 
             return output;
         }

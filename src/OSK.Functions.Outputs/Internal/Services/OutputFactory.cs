@@ -10,100 +10,60 @@ namespace OSK.Functions.Outputs.Internal.Services
     {
         #region IOutputFactory
 
-        public virtual IOutput Create(OutputStatusCode statusCode)
+        public virtual IOutput Create(OutputInformation outputInformation)
         {
-            ValidateOutput(statusCode, null, null);
-            return CreateOutput(statusCode, null, null);
+            if (outputInformation is null)
+            {
+                throw new ArgumentNullException(nameof(outputInformation));
+            }
+
+            var details = GetOutputDetails(outputInformation);
+            ValidateOutput(details, outputInformation.ErrorInformation);
+            return new Output(details, outputInformation.ErrorInformation);
         }
 
-        public virtual IOutput Create(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public virtual IOutput<TValue> Create<TValue>(TValue value, OutputInformation outputInformation)
         {
-            ValidateOutput(statusCode, errors, null);
-            return CreateOutput(statusCode, errors, null);
-        }
+            if (outputInformation is null)
+            {
+                throw new ArgumentNullException(nameof(outputInformation));
+            }
 
-        public virtual IOutput Create(OutputStatusCode statusCode, Exception ex)
-        {
-            ValidateOutput(statusCode, null, ex);
-            return CreateOutput(statusCode, null, ex);
-        }
-
-        public virtual IOutput<TValue> Create<TValue>(TValue value, OutputStatusCode statusCode)
-        {
-            ValidateOutput(value, statusCode, null, null);
-            return CreateOutput(value, statusCode, null, null);
-        }
-
-        public virtual IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, IEnumerable<Error> errors)
-        {
-            ValidateOutput(statusCode, errors, null);
-            return CreateOutput(default(TValue), statusCode, errors, null);
-        }
-
-        public virtual IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, Exception ex)
-        {
-            ValidateOutput(statusCode, null, ex);
-            return CreateOutput(default(TValue), statusCode, null, ex);
+            var details = GetOutputDetails(outputInformation);
+            ValidateOutput(value, details, outputInformation.ErrorInformation);
+            return new Output<TValue>(value, details, outputInformation.ErrorInformation);
         }
 
         #endregion
 
         #region Helpers
 
-        private IOutput CreateOutput(OutputStatusCode statusCode, IEnumerable<Error> errors,
-            Exception ex)
+        private OutputDetails GetOutputDetails(OutputInformation outputInformation)
+            => new OutputDetails(outputInformation.FunctionResult, outputInformation.ResultSpecificityCode, outputInformation.OriginationSource);
+        
+        private void ValidateOutput<TValue>(TValue value, OutputDetails details, ErrorInformation? errorInformation)
         {
-            ErrorInformation? errorInformation = null;
-            if (errors != null && errors.Any())
-            {
-                errorInformation = new ErrorInformation(errors);
-            }
-            else if (ex != null)
-            {
-                errorInformation = new ErrorInformation(ex);
-            }
-
-            return new Output(statusCode, errorInformation);
-        }
-
-        private IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, 
-            IEnumerable<Error> errors, Exception ex)
-        {
-            ErrorInformation? errorInformation = null;
-            if (errors != null && errors.Any())
-            {
-                errorInformation = new ErrorInformation(errors);
-            }
-            else if (ex != null)
-            {
-                errorInformation = new ErrorInformation(ex);
-            }
-
-            return new Output<TValue>(value, statusCode, errorInformation);
-        }
-
-        private void ValidateOutput<TValue>(TValue value, OutputStatusCode statusCode, 
-            IEnumerable<Error> errors, Exception ex)
-        {
-            ValidateOutput(statusCode, errors, ex);
-            if (statusCode.IsSuccessCode && value is null)
+            ValidateOutput(details, errorInformation);
+            if (details.IsSuccessful && value is null)
             {
                 throw new ArgumentNullException("A non-null value must be passed for a typed, successful, output.");
             }
         }
 
-        private void ValidateOutput(OutputStatusCode statusCode, IEnumerable<Error> errors, Exception ex)
+        private void ValidateOutput(OutputDetails details, ErrorInformation? errorInformation)
         {
-            switch (statusCode.IsSuccessCode)
+            switch (details.Result)
             {
-                case true:
-                    if ((errors != null && errors.Any()) || ex != null)
+                case FunctionResult.Success:
+                case FunctionResult.MultipleResults:
+                    if (errorInformation != null)
                     {
                         throw new InvalidOperationException("Unable to create a successful output that contains an error or exception.");
                     }
                     break;
-                case false:
-                    if ((errors == null || !errors.Any()) && ex == null)
+                case FunctionResult.Error:
+                case FunctionResult.Failed:
+                    if (errorInformation is null)
                     {
                         throw new InvalidOperationException("Unable to create an error output that contains no error information.");
                     }

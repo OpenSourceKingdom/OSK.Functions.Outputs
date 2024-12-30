@@ -1,6 +1,6 @@
 ﻿namespace OSK.Functions.Outputs.Abstractions
 {
-    public struct Error
+    public readonly struct Error
     {
         #region Variables
 
