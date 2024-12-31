@@ -1,33 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OSK.Functions.Outputs.Abstractions
+﻿namespace OSK.Functions.Outputs.Abstractions
 {
-    public class OutputInformation
+    public class OutputInformation(FunctionResult functionResult, ResultSpecificityCode resultSpecificityCode,
+            ErrorInformation? errorInformation, string originationSource)
     {
         #region Variables
 
-        public string OriginationSource { get; }
+        public string OriginationSource => originationSource;
 
-        public FunctionResult FunctionResult { get; }
+        public FunctionResult FunctionResult => functionResult;
 
-        public ResultSpecificityCode ResultSpecificityCode { get; }
+        public ResultSpecificityCode ResultSpecificityCode => resultSpecificityCode;
 
-        public ErrorInformation? ErrorInformation { get; }
-
-        #endregion
-
-        #region Constructors
-
-        public OutputInformation(FunctionResult functionResult, ResultSpecificityCode resultSpecificityCode,
-            ErrorInformation? errorInformation, string originationSource)
-        {
-            FunctionResult = functionResult;
-            ResultSpecificityCode = resultSpecificityCode;
-            ErrorInformation = errorInformation;
-            OriginationSource = originationSource;
-        }
+        public ErrorInformation? ErrorInformation => errorInformation;
 
         #endregion
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
@@ -30,25 +29,7 @@ namespace OSK.Functions.Outputs.Abstractions
         {
             return factory.Create(new OutputInformation(FunctionResult.Error,
                 resultSpecificityCode: specificityCode,
-                errorInformation: new ErrorInformation(new Error[] { new Error(error) }),
-                originationSource: originationSource));
-        }
-
-        public static IOutput<TValue> Error<TValue>(this IOutputFactory factory, string error, ResultSpecificityCode specificityCode = ResultSpecificityCode.InvalidData,
-            string originationSource = OutputDetails.DefaultSource)
-        {
-            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Error,
-                resultSpecificityCode: specificityCode,
-                errorInformation: new ErrorInformation(new Error[] { new Error(error) }),
-                originationSource: originationSource));
-        }
-
-        public static IOutput Error<TValue>(this IOutputFactory factory, IEnumerable<Error> errors, ResultSpecificityCode specificityCode = ResultSpecificityCode.InvalidData,
-            string originationSource = OutputDetails.DefaultSource)
-        {
-            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Error,
-                resultSpecificityCode: specificityCode,
-                errorInformation: new ErrorInformation(errors),
+                errorInformation: new ErrorInformation([new Error(error)]),
                 originationSource: originationSource));
         }
 
@@ -61,29 +42,71 @@ namespace OSK.Functions.Outputs.Abstractions
                 originationSource: originationSource));
         }
 
+        public static IOutput<TValue?> Error<TValue>(this IOutputFactory factory, string error, ResultSpecificityCode specificityCode = ResultSpecificityCode.InvalidData,
+            string originationSource = OutputDetails.DefaultSource)
+        {
+            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Error,
+                resultSpecificityCode: specificityCode,
+                errorInformation: new ErrorInformation([new Error(error)]),
+                originationSource: originationSource));
+        }
+
+        public static IOutput<TValue?> Error<TValue>(this IOutputFactory factory, IEnumerable<Error> errors, ResultSpecificityCode specificityCode = ResultSpecificityCode.InvalidData,
+            string originationSource = OutputDetails.DefaultSource)
+        {
+            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Error,
+                resultSpecificityCode: specificityCode,
+                errorInformation: new ErrorInformation(errors),
+                originationSource: originationSource));
+        }
+
         #endregion
 
-        #region Failed
+        #region Fault
 
-        public static IOutput Failed(this IOutputFactory factory,
+        public static IOutput Fault(this IOutputFactory factory,
             Exception ex, string originationSource = OutputDetails.DefaultSource)
         {
-            return factory.Create(FunctionResult.Failed, new OutputInformation(FunctionResult.Failed,
-                resultSpecificityCode: ResultSpecificityCode.Exception,
+            return factory.Create(FunctionResult.Fault, new OutputInformation(FunctionResult.Failed,
+                resultSpecificityCode: ResultSpecificityCode.UnspecifiedException,
                 errorInformation: new ErrorInformation(ex),
                 originationSource: originationSource
                 ));
         }
 
-        public static IOutput<TValue> Failed<TValue>(this IOutputFactory factory,
-            Exception ex, string originationSource = OutputDetails.DefaultSource)
+        public static IOutput Fault(this IOutputFactory factory,
+            Exception ex, ResultSpecificityCode specificityCode, string originationSource = OutputDetails.DefaultSource)
         {
-            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Failed,
-                resultSpecificityCode: ResultSpecificityCode.Exception,
+            return factory.Create(FunctionResult.Fault, new OutputInformation(FunctionResult.Failed,
+                resultSpecificityCode: specificityCode,
                 errorInformation: new ErrorInformation(ex),
                 originationSource: originationSource
                 ));
         }
+
+        public static IOutput<TValue?> Fault<TValue>(this IOutputFactory factory,
+            Exception ex, string originationSource = OutputDetails.DefaultSource)
+        {
+            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Fault,
+                resultSpecificityCode: ResultSpecificityCode.UnspecifiedException,
+                errorInformation: new ErrorInformation(ex),
+                originationSource: originationSource
+                ));
+        }
+
+        public static IOutput<TValue?> Fault<TValue>(this IOutputFactory factory,
+            Exception ex, ResultSpecificityCode specificityCode, string originationSource = OutputDetails.DefaultSource)
+        {
+            return factory.Create(default(TValue), new OutputInformation(FunctionResult.Fault,
+                resultSpecificityCode: specificityCode,
+                errorInformation: new ErrorInformation(ex),
+                originationSource: originationSource
+                ));
+        }
+
+        #endregion
+
+        #region MultipleResults
 
         #endregion
 

@@ -10,25 +10,24 @@
         /// 
         /// This should represent that all calls and operations that the function dependend on also completed successfully
         /// </summary>
-        Success = 200,
+        Success = 20,
 
         /// <summary>
-        /// The function partially completed as expected. Specific errors and other information should be checked on the output's
-        /// result value
+        /// The function encountered an issue after it had successfully started its operation. This should indicate that while the function
+        /// itself was able to perform its work, some other operation it dependend on failed, i.e. a service call to an API or similar.
         /// </summary>
-        MultipleResults = 299,
+        Failed = 30,
 
         /// <summary>
         /// The function encountered an issue during its operation that prevented successful completion. This should indicate that 
         /// something directly related to the function, i.e. validation, parameters, etc., were not properly configured for the function
         /// to run.
         /// </summary>
-        Error = 400,
+        Error = 40,
 
         /// <summary>
-        /// The function encountered an issue after it had successfully started its operation. This should indicate that while the function
-        /// itself was able to perform its work, some other operation it dependend on failed, i.e. a service call to an API or similar.
+        /// The function encountered an exception state that prevented successful completion. 
         /// </summary>
-        Failed = 500
+        Fault = 50
     }
 }

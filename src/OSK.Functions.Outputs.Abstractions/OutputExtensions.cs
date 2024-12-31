@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 
 namespace OSK.Functions.Outputs.Abstractions
@@ -25,21 +26,17 @@ namespace OSK.Functions.Outputs.Abstractions
 
         /// <summary>
         /// Attempts to map an output to a <see cref="HttpStatusCode"/>. This function may not be supported for all outputs. 
-        /// For any output conversion not immediately supported, <see cref="HttpStatusCode.NotImplemented"/> will be returned.
+        /// For any output conversion not immediately supported, an exception will be thrown.
         /// </summary>
         /// <param name="output">The output to convert to an HttpStatusCode</param>
         /// <returns>The supported conversion to <see cref="HttpStatusCode"/> or <see cref="HttpStatusCode.NotImplemented"/> if not supported.</returns>
         public static HttpStatusCode AsStatusCode(this IOutput output)
         {
-            if (output.Details.Result == FunctionResult.MultipleResults)
-            {
-                return HttpStatusCode.MultiStatus;
-            }
-
             return output.Details.SpecificityCode switch
             {
                 ResultSpecificityCode.Created => HttpStatusCode.Created,
                 ResultSpecificityCode.Updated => HttpStatusCode.OK,
+                ResultSpecificityCode.MultipleResults => HttpStatusCode.MultiStatus,
                 ResultSpecificityCode.Accepted => HttpStatusCode.Accepted,
                 ResultSpecificityCode.Deleted => HttpStatusCode.NoContent,
                 ResultSpecificityCode.BadGateway => HttpStatusCode.BadGateway,
@@ -50,8 +47,9 @@ namespace OSK.Functions.Outputs.Abstractions
                 ResultSpecificityCode.InvalidData => HttpStatusCode.BadRequest,
                 ResultSpecificityCode.ServiceUnavailable => HttpStatusCode.ServiceUnavailable,
                 ResultSpecificityCode.ServerError => HttpStatusCode.InternalServerError,
-                ResultSpecificityCode.Exception => HttpStatusCode.InternalServerError,
-                _ => HttpStatusCode.NotImplemented
+                ResultSpecificityCode.Locked => HttpStatusCode.Locked,
+                ResultSpecificityCode.MethodNotImplemented => HttpStatusCode.NotImplemented,
+                _ => throw new InvalidCastException($"Unable to cast a specificity code of {output.Details.SpecificityCode} to an HttpStatusCode.")
             };
         }
     }

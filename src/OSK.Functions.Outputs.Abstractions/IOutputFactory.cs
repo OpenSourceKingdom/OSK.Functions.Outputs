@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using OSK.Hexagonal.MetaData;
+﻿using OSK.Hexagonal.MetaData;
 
 namespace OSK.Functions.Outputs.Abstractions
 {

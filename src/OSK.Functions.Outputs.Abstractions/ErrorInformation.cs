@@ -8,7 +8,7 @@ namespace OSK.Functions.Outputs.Abstractions
     {
         #region Variables
 
-        public Exception Exception { get; set; }
+        public Exception? Exception { get; set; }
 
         public IReadOnlyCollection<Error> Errors { get; set; }
 

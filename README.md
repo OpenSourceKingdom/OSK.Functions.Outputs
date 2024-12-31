@@ -19,10 +19,17 @@ An output's code can be easily represented by the following template
 ```
 The string form of the codes should hopefully make checking/debugging error information easier by allowing more complex error scenarios to be viewable in a concise form.
 For example, a function that has successfully completed a task and has queued an asynchronous job can be shown as
-`200.202`
+`20.22`
 
-`200` function result represents a successful function call completion, with `202` representing an accepted request to a function signifying that a job has been queued for
+A `20` for the function result represents a successful function call completion, with a specificity of `22` representing an accepted request to a function signifying that a job has been queued for
 later processing.
+
+For future codes that may be added, the following represents the different groupings of codes:
+* Ranges of [`20-29`, `200-299`, ... ] represent `successful function result` codes as well as `informational specificity` related codes
+* Ranges of [`30-39`, `300-399`, ... ] represent `error function result` codes as well as `network specificity` related codes
+* Ranges of [`40-49`, `400-499`, ... ] represent `failed function result` codes as well as `validation specificity` related codes 
+* Ranges of [`50-59`, `500-599`, ... ] represent `fault function result` codes as well as `operation specificity` related codes
+  * For example, an a specific issue with the system encountering deadlocks could be represented via this range
 
 # Abstractions
 The abstraction layer should allow libraries that only need access to the interfaces to avoid adding a dependency on the core output logic, thus reducing
@@ -42,4 +49,4 @@ Notes:
  * `ResultSpecificity` codes do have some similar codes/values to `HttpStatusCode`s, but this is only coincidential and should not be expected to be upheld in all cases.
 
 # Contributions and Issues
-Any and all contributions are appreciated! Please be sure to follow the branch naming convention OSK-{issue number}-{deliminated}-{branch}-{name} as current workflows rely on it for automatic issue closure. Please submit issues for discussion and tracking using the github issue tracker.
+Any and all contributions are appreciated! Please be sure to follow the branch naming convention OSK-{issue number}-{deliminated}-{branch}-{name} as current workflows rely on it for automatic issue closure. Please submit issues for discussion and tracking using the github issue tracker. Feel free to create issues to discuss adding more nuanced specificity or other result codes.

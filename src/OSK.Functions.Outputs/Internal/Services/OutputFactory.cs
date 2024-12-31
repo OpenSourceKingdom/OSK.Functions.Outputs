@@ -1,8 +1,6 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
 using OSK.Functions.Outputs.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OSK.Functions.Outputs.Internal.Services
 {
@@ -55,7 +53,6 @@ namespace OSK.Functions.Outputs.Internal.Services
             switch (details.Result)
             {
                 case FunctionResult.Success:
-                case FunctionResult.MultipleResults:
                     if (errorInformation != null)
                     {
                         throw new InvalidOperationException("Unable to create a successful output that contains an error or exception.");
@@ -63,6 +60,7 @@ namespace OSK.Functions.Outputs.Internal.Services
                     break;
                 case FunctionResult.Error:
                 case FunctionResult.Failed:
+                case FunctionResult.Fault:
                     if (errorInformation is null)
                     {
                         throw new InvalidOperationException("Unable to create an error output that contains no error information.");

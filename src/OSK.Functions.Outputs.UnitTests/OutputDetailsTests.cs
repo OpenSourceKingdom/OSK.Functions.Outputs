@@ -1,5 +1,4 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
-using System.Net;
 using Xunit;
 
 namespace OSK.Functions.Outputs.UnitTests

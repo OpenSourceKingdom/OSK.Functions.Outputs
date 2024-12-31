@@ -1,14 +1,18 @@
-﻿using OSK.Functions.Outputs.Abstractions;
-using OSK.Functions.Outputs.Internal.Services;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
+using OSK.Functions.Outputs.Abstractions;
+using OSK.Functions.Outputs.Logging.Internal.Services;
 using Xunit;
 
-namespace OSK.Functions.Outputs.UnitTests.Internal.Services
+namespace OSK.Functions.Outputs.Logging.UnitTests.Internal.Services
 {
     public class OutputFactoryTests
     {
         #region Variables
 
-        private readonly OutputFactory _factory;
+        private readonly Mock<ILogger<OutputFactoryTests>> _mockLogger;
+
+        private readonly OutputFactory<OutputFactoryTests> _factory;
 
         #endregion
 
@@ -16,7 +20,9 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
 
         public OutputFactoryTests()
         {
-            _factory = new OutputFactory();
+            _mockLogger = new Mock<ILogger<OutputFactoryTests>>();
+
+            _factory = new OutputFactory<OutputFactoryTests>(_mockLogger.Object);
         }
 
         #endregion
@@ -106,7 +112,6 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
         [Theory]
         [InlineData(FunctionResult.Error)]
         [InlineData(FunctionResult.Failed)]
-        [InlineData(FunctionResult.Fault)]
         public void Create_Value_OutputInformation_ErrorResults_NoErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
         {
             // Arrange

@@ -24,6 +24,6 @@ namespace OSK.Functions.Outputs.Abstractions
         /// </summary>
         public long? Total { get; set; }
 
-        public IList<TValue> Items { get; set; }
+        public IList<TValue> Items { get; set; } = [];
     }
 }

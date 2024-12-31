@@ -14,61 +14,38 @@ namespace OSK.Functions.Outputs.Abstractions
         /// </summary>
         None = 0,
 
-        #region Informational
+        #region Informational [Codes between the 20-29, 200-299, etc.]
 
         /// <summary>
         /// The function created a resource
         /// </summary>
-        Created = 200,
+        Created = 20,
 
         /// <summary>
         /// The function updated a resource
         /// </summary>
-        Updated = 201,
+        Updated = 21,
 
         /// <summary>
         /// The function has completed initial processing of the call and has returned successfuly. Depending on the implementation of the function,
         /// this may imply a background task or job of some sort being ran asynchronously
         /// </summary>
-        Accepted = 202,
+        Accepted = 22,
         
         /// <summary>
         /// The function deleted a resource
         /// </summary>
-        Deleted = 203,
+        Deleted = 23,
+
+        /// <summary>
+        /// The function partially completed as expected. Specific errors and other information should be checked on the output's
+        /// result value
+        /// </summary>
+        MultipleResults = 29,
 
         #endregion
 
-        #region Validation Errors
-
-        /// <summary>
-        /// The data that an output is associated to has failed due to some part of it being invalid
-        /// </summary>
-        InvalidData = 400,
-
-        /// <summary>
-        /// The function lacked an identification required to run the operation
-        /// </summary>
-        NotAuthenticated = 401,
-
-        /// <summary>
-        /// THe function was authenticated to an identity, but the identity did not have the required permissions to run the operation
-        /// </summary>
-        InsufficientPermissions = 403,
-
-        /// <summary>
-        /// A resource being referenced by the function could not be found
-        /// </summary>
-        ResourceNotFound = 404,
-        
-        /// <summary>
-        /// The data that an output is associated to has failed due to some part of it being duplicated
-        /// </summary>
-        DuplicateData = 409,
-
-        #endregion
-
-        #region Network Communication Errors
+        #region Network Communication Errors [Codes between 30-39, 300-399, etc.]
 
         /// <summary>
         /// This is meant to signify an error further down stream that is being propogated back up.
@@ -79,28 +56,75 @@ namespace OSK.Functions.Outputs.Abstractions
         /// that a service it dependend on had issues that prevented completion, but that service B itself was not 
         /// having issues
         /// </summary>
-        DownStreamError = 500,
+        DownStreamError = 30,
 
         /// <summary>
         /// The service encountered a <see cref="HttpStatusCode.ServiceUnavailable"/> when attempting to perform an action
         /// </summary>
-        ServiceUnavailable = 501,
+        ServiceUnavailable = 31,
 
         /// <summary>
         /// The function encountered a <see cref="HttpStatusCode.BadGateway"/> when attempting to perform an action
         /// </summary>
-        BadGateway = 502,
-        
+        BadGateway = 32,
+
         /// <summary>
         /// The function encountered a <see cref="HttpStatusCode.InternalServerError"/> when attempting to perform an action
         /// </summary>
-        ServerError = 503,
+        ServerError = 33,
 
         #endregion
 
-        #region Misc
+        #region Validation Errors [Codes between 40-49, 400-499, etc.]
 
-        Exception = 999
+        /// <summary>
+        /// The data that an output is associated to has failed due to some part of it being invalid
+        /// </summary>
+        InvalidData = 40,
+
+        /// <summary>
+        /// The function lacked an identification required to run the operation
+        /// </summary>
+        NotAuthenticated = 41,
+
+        /// <summary>
+        /// THe function was authenticated to an identity, but the identity did not have the required permissions to run the operation
+        /// </summary>
+        InsufficientPermissions = 43,
+
+        /// <summary>
+        /// A resource being referenced by the function could not be found
+        /// </summary>
+        ResourceNotFound = 44,
+        
+        /// <summary>
+        /// Some part of the data was outside the expected range of valid input
+        /// </summary>
+        InvalidInputRange = 45,
+
+        /// <summary>
+        /// The data that an output is associated to has failed due to some part of it being duplicated
+        /// </summary>
+        DuplicateData = 49,
+
+        #endregion
+
+        #region Operation Errors [Codes between 50-59, 500-599, etc.]
+
+        /// <summary>
+        /// The function encountered an issue with a locking mechanism that prevented its operation
+        /// </summary>
+        Locked = 51,
+
+        /// <summary>
+        /// An expected method was not implemented for the function to use
+        /// </summary>
+        MethodNotImplemented = 52,
+
+        /// <summary>
+        /// A catch all exception that signifies some unknown exception was encountered
+        /// </summary>
+        UnspecifiedException
 
         #endregion
     }

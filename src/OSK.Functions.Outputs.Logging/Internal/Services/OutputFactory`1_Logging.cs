@@ -4,44 +4,36 @@ using System;
 
 namespace OSK.Functions.Outputs.Logging.Internal.Services
 {
-    internal partial class OutputFactory<TSource>
+    internal partial class OutputFactory<TSource>(ILogger<TSource> logger)
     {
-        #region Variables
-
-        private readonly ILogger<TSource> _logger;
-
-        #endregion
-
-        #region Constructors
-
-        public OutputFactory(ILogger<TSource> logger)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
-        #endregion
-
         #region Logging
        
         private void LogOutput(IOutput output)
         {
-            if (output.ErrorInformation.HasValue)
+            if (output.IsSuccessful)
             {
-                _logger.Log(
-                    LogLevel.Error,
-                    0,
-                    output.ErrorInformation.Value.Exception,
-                    "Output Failed. Status: {code} Reason: {errorMessage}",
-                    output.Details, output.GetErrorString("\r\n"));
+                LogSuccess(output.Details);
+                return;
+            }
+
+            if (output.ErrorInformation.Value.Exception is null)
+            {
+                LogErrorInformation(output.Details, output.GetErrorString($"{Environment.NewLine}"));
             }
             else
             {
-                LogSuccess(output.Details);
+                LogExceptionInformation(output.Details, output.ErrorInformation.Value.Exception);
             }
         }
 
         [LoggerMessage(eventId: 1, LogLevel.Debug, "Successful output. Status: {code}")]
         private partial void LogSuccess(OutputDetails code);
+
+        [LoggerMessage(eventId: 2, LogLevel.Error, "Output Failed. Status: {details} Reason: {errorMessage}")]
+        private partial void LogErrorInformation(OutputDetails details, string errorMessage);
+
+        [LoggerMessage(eventId: 3, LogLevel.Critical, "Output Exception. Status: {details}")]
+        private  partial void LogExceptionInformation(OutputDetails details, Exception ex);
 
         #endregion
     }

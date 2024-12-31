@@ -1,19 +1,10 @@
 ﻿namespace OSK.Functions.Outputs.Abstractions
 {
-    public readonly struct Error
+    public readonly struct Error(string message)
     {
         #region Variables
 
-        public string Message { get; }
-
-        #endregion
-
-        #region Constructors
-
-        public Error(string message)
-        {
-            Message = message;
-        }
+        public string Message => message;
 
         #endregion
     }

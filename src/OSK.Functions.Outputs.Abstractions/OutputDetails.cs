@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Net;
-using System.Reflection;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    public struct OutputDetails
+    public struct OutputDetails(FunctionResult functionResult, ResultSpecificityCode specificityCode, string originationSource = OutputDetails.DefaultSource)
     {
         #region Static
 
-        public static readonly OutputDetails Success = new OutputDetails(FunctionResult.Success, ResultSpecificityCode.None, DefaultSource);
+        public static readonly OutputDetails Success = new(FunctionResult.Success, ResultSpecificityCode.None, DefaultSource);
 
         public static OutputDetails Parse(string statusCode)
         {
@@ -48,35 +46,21 @@ namespace OSK.Functions.Outputs.Abstractions
 
         public const string DefaultSource = "None";
 
-        public FunctionResult Result { get; }
+        public readonly FunctionResult Result => functionResult;
 
-        public ResultSpecificityCode SpecificityCode { get; }
+        public readonly ResultSpecificityCode SpecificityCode => specificityCode;
 
-        public string OriginationSource { get; }
+        public string OriginationSource => OriginationSource;
 
-        private readonly string _originationSuffix;
-
-        #endregion
-
-        #region Constructors
-
-        public OutputDetails(FunctionResult functionResult, ResultSpecificityCode specificityCode, string originationSource = DefaultSource)
-        {
-            Result = functionResult;
-            SpecificityCode = specificityCode;
-            OriginationSource = originationSource;
-
-            _originationSuffix = string.IsNullOrWhiteSpace(originationSource) || originationSource == DefaultSource
+        private readonly string _originationSuffix = string.IsNullOrWhiteSpace(originationSource) || string.Equals(originationSource, DefaultSource, StringComparison.OrdinalIgnoreCase)
                 ? string.Empty
                 : $",{originationSource}";
-        }
 
         #endregion
-        
+
         #region Helpers
 
-        public readonly bool IsSuccessful => Result is FunctionResult.Success
-            || Result is FunctionResult.MultipleResults;
+        public readonly bool IsSuccessful => Result is FunctionResult.Success;
 
         public override readonly string ToString() => $"{(int)Result}.{(int)SpecificityCode}";
 

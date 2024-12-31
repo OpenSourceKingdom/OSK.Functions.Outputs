@@ -1,8 +1,6 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
 using OSK.Functions.Outputs.Internal.Services;
 using OSK.Functions.Outputs.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
 
 namespace OSK.Functions.Outputs.Logging.Internal.Services
 {
