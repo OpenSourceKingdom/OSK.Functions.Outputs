@@ -22,7 +22,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>		
-		<PackageReference Include="OSK.Hexagonal.MetaData" Version="0.1.0" />
+		<PackageReference Include="OSK.Hexagonal.MetaData" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

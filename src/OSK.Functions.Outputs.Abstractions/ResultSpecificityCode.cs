@@ -8,11 +8,22 @@ namespace OSK.Functions.Outputs.Abstractions
     /// </summary>
     public enum ResultSpecificityCode
     {
+        #region Special
+
         /// <summary>
         /// There is no specific information needed for the output. This is the default value for success outputs, 
         /// if nothing is set
         /// </summary>
         None = 0,
+
+        /// <summary>
+        /// In the case where a consumer may send the code to a project without the latest updates and latest codes,
+        /// this should represent to the application that their version of Outputs is out of date and that they need
+        /// to be updated if they want to understand the meaning of the value being transmitted
+        /// </summary>
+        SpecificityNotRecognized = 1,
+
+        #endregion
 
         #region Informational [Codes between the 20-29, 200-299, etc.]
 

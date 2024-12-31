@@ -67,7 +67,7 @@ namespace OSK.Functions.Outputs.Logging.UnitTests.Internal.Services
         public void Create_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
         {
             // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.ResourceNotFound, new ErrorInformation(), OutputDetails.DefaultSource);
+            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.ResourceNotFound, new ErrorInformation([ new Error("A bad day")]), OutputDetails.DefaultSource);
 
             // Act
             var output = _factory.Create(outputInformation);
@@ -78,6 +78,34 @@ namespace OSK.Functions.Outputs.Logging.UnitTests.Internal.Services
             Assert.Equal(functionResult, output.Details.Result);
             Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
             Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Success, ResultSpecificityCode.BadGateway)]
+        [InlineData(FunctionResult.Success, ResultSpecificityCode.UnspecifiedException)]
+        [InlineData(FunctionResult.Success, ResultSpecificityCode.ResourceNotFound)]
+        public void Create_OutputInformation_SuccessResults_HasNoErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
+            ResultSpecificityCode invalidCode)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, invalidCode, null, OutputDetails.DefaultSource);
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Failed, ResultSpecificityCode.Created)]
+        [InlineData(FunctionResult.Error, ResultSpecificityCode.Updated)]
+        [InlineData(FunctionResult.Fault, ResultSpecificityCode.Deleted)]
+        public void Create_OutputInformation_ErrorResults_HasErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
+            ResultSpecificityCode invalidCode)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, invalidCode, new ErrorInformation(), OutputDetails.DefaultSource);
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
         }
 
         [Theory]
@@ -112,6 +140,7 @@ namespace OSK.Functions.Outputs.Logging.UnitTests.Internal.Services
         [Theory]
         [InlineData(FunctionResult.Error)]
         [InlineData(FunctionResult.Failed)]
+        [InlineData(FunctionResult.Fault)]
         public void Create_Value_OutputInformation_ErrorResults_NoErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
         {
             // Arrange
@@ -133,13 +162,43 @@ namespace OSK.Functions.Outputs.Logging.UnitTests.Internal.Services
         }
 
         [Theory]
-        [InlineData(FunctionResult.Failed)]
-        [InlineData(FunctionResult.Error)]
-        [InlineData(FunctionResult.Fault)]
-        public void Create_Value_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
+        [InlineData(FunctionResult.Success, ResultSpecificityCode.BadGateway)]
+        [InlineData(FunctionResult.Success, ResultSpecificityCode.UnspecifiedException)]
+        [InlineData(FunctionResult.Success, ResultSpecificityCode.ResourceNotFound)]
+        public void Create_Value_OutputInformation_SuccessResults_HasNoErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
+            ResultSpecificityCode invalidCode)
         {
             // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.ResourceNotFound, new ErrorInformation(), OutputDetails.DefaultSource);
+            var outputInformation = new OutputInformation(functionResult, invalidCode, null, OutputDetails.DefaultSource);
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Failed, ResultSpecificityCode.Created)]
+        [InlineData(FunctionResult.Error, ResultSpecificityCode.Updated)]
+        [InlineData(FunctionResult.Fault, ResultSpecificityCode.Deleted)]
+        public void Create_Value_OutputInformation_ErrorResults_HasErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
+            ResultSpecificityCode invalidCode)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, invalidCode, new ErrorInformation(), OutputDetails.DefaultSource);
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
+        }
+
+        [Theory]
+        [InlineData(FunctionResult.Failed, ResultSpecificityCode.Locked)]
+        [InlineData(FunctionResult.Error, ResultSpecificityCode.ResourceNotFound)]
+        [InlineData(FunctionResult.Fault, ResultSpecificityCode.UnspecifiedException)]
+        public void Create_Value_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult,
+            ResultSpecificityCode validSpecificity)
+        {
+            // Arrange
+            var outputInformation = new OutputInformation(functionResult, validSpecificity,
+                new ErrorInformation([new Error("A bad day")]), OutputDetails.DefaultSource);
 
             // Act
             var output = _factory.Create(default(int), outputInformation);

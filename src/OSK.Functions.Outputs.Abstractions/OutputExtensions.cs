@@ -14,7 +14,8 @@ namespace OSK.Functions.Outputs.Abstractions
         /// <returns>A single consolidated error string for the output</returns>
         public static string GetErrorString(this IOutput output, string separator = ",")
         {
-            if (output.ErrorInformation == null)
+            if (output.ErrorInformation?.Exception is null
+                || output.ErrorInformation?.Errors is null)
             {
                 return string.Empty;
             }

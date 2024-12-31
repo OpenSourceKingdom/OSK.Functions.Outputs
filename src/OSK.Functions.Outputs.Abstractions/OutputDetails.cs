@@ -2,7 +2,7 @@
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    public struct OutputDetails(FunctionResult functionResult, ResultSpecificityCode specificityCode, string originationSource = OutputDetails.DefaultSource)
+    public struct OutputDetails
     {
         #region Static
 
@@ -23,14 +23,14 @@ namespace OSK.Functions.Outputs.Abstractions
             }
 
             if (!int.TryParse(statusParts[0], out var functionResult)
-                && !Enum.IsDefined(typeof(FunctionResult), functionResult))
+                || !Enum.IsDefined(typeof(FunctionResult), functionResult))
             {
                 throw new InvalidOperationException("The expected http status code was not valid.");
             }
             if (!int.TryParse(statusParts[1], out var specificityCode)
-                && !Enum.IsDefined(typeof(ResultSpecificityCode), specificityCode))
+                || !Enum.IsDefined(typeof(ResultSpecificityCode), specificityCode))
             {
-                throw new InvalidOperationException("The expected detail code was not valid.");
+                specificityCode = (int)ResultSpecificityCode.SpecificityNotRecognized;
             }
 
             var originationSource = statusCodeParts.Length == 1
@@ -46,15 +46,35 @@ namespace OSK.Functions.Outputs.Abstractions
 
         public const string DefaultSource = "None";
 
-        public readonly FunctionResult Result => functionResult;
+        public FunctionResult Result { get; }
 
-        public readonly ResultSpecificityCode SpecificityCode => specificityCode;
+        public ResultSpecificityCode SpecificityCode { get; }
 
-        public string OriginationSource => OriginationSource;
+        public string OriginationSource { get; }
 
-        private readonly string _originationSuffix = string.IsNullOrWhiteSpace(originationSource) || string.Equals(originationSource, DefaultSource, StringComparison.OrdinalIgnoreCase)
+        private readonly string _originationSuffix;
+
+        #endregion
+
+        #region Constructors
+
+        public OutputDetails()
+            : this(FunctionResult.Success, ResultSpecificityCode.None)
+        {
+
+        }
+
+        public OutputDetails(FunctionResult functionResult, ResultSpecificityCode specificityCode,
+            string originationSource = DefaultSource)
+        {
+            Result = functionResult;
+            SpecificityCode = specificityCode;
+            OriginationSource = originationSource;
+
+            _originationSuffix = string.IsNullOrWhiteSpace(originationSource) || string.Equals(originationSource, DefaultSource, StringComparison.OrdinalIgnoreCase)
                 ? string.Empty
-                : $",{originationSource}";
+                : $",{OriginationSource}";
+        }
 
         #endregion
 
@@ -62,7 +82,9 @@ namespace OSK.Functions.Outputs.Abstractions
 
         public readonly bool IsSuccessful => Result is FunctionResult.Success;
 
-        public override readonly string ToString() => $"{(int)Result}.{(int)SpecificityCode}";
+        public override readonly string ToString() => OriginationSource is null
+            ? null
+            : $"{(int)Result}.{(int)SpecificityCode}";
 
         public readonly string ToString(bool includeOrigination) => includeOrigination
             ? $"{(int)Result}.{(int)SpecificityCode}{_originationSuffix}"

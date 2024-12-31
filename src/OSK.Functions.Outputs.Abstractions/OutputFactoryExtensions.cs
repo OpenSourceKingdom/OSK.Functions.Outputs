@@ -106,10 +106,6 @@ namespace OSK.Functions.Outputs.Abstractions
 
         #endregion
 
-        #region MultipleResults
-
-        #endregion
-
         #region Paginated
 
         public static IOutput<PaginatedOutput<TValue>> Paginated<TValue>(this IOutputFactory factory,

@@ -60,7 +60,7 @@ namespace OSK.Functions.Outputs.UnitTests
             var str = details.ToString();
 
             // Act
-            var newDetails = OutputDetails.Parse((string)str);
+            var newDetails = OutputDetails.Parse(str);
 
             // Assert
             Assert.Equal(functionResult, newDetails.Result);
@@ -79,12 +79,26 @@ namespace OSK.Functions.Outputs.UnitTests
             var str = details.ToString(true);
 
             // Act
-            var newDetails = OutputDetails.Parse((string)str);
+            var newDetails = OutputDetails.Parse(str);
 
             // Assert
             Assert.Equal(functionResult, newDetails.Result);
             Assert.Equal(spcecificityCode, newDetails.SpecificityCode);
             Assert.Equal("Hello World", newDetails.OriginationSource);
+        }
+
+        [Fact]
+        public void OutputDetails_Constructor_String_SpecifictyCodeNotValidValue_ReturnsDetailsWithUnRecognizedSpecificityCode()
+        {
+            // Arrange
+            var details = "20.118";
+
+            // Act
+            var newDetails = OutputDetails.Parse(details);
+
+            // Assert
+            Assert.Equal(FunctionResult.Success, newDetails.Result);
+            Assert.Equal(ResultSpecificityCode.SpecificityNotRecognized, newDetails.SpecificityCode);
         }
 
         #endregion
