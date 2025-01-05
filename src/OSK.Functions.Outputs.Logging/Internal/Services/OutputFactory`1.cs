@@ -1,6 +1,7 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
 using OSK.Functions.Outputs.Internal.Services;
 using OSK.Functions.Outputs.Logging.Abstractions;
+using OSK.Functions.Outputs.Models;
 
 namespace OSK.Functions.Outputs.Logging.Internal.Services
 {
@@ -8,17 +9,20 @@ namespace OSK.Functions.Outputs.Logging.Internal.Services
     {
         #region IOutputFactory
 
-        public override IOutput Create(OutputInformation outputInformation)
+        internal override IOutput Create(OutputSpecificityCode resultSpecificityCode,
+            ErrorInformation? errorInformation, string originationSource, OutputDetails? details = null)
         {
-            var output = base.Create(outputInformation);
+            var output = base.Create(resultSpecificityCode, errorInformation, originationSource, details);
             LogOutput(output);
 
             return output;
         }
 
-        public override IOutput<TValue> Create<TValue>(TValue value, OutputInformation outputInformation)
+        internal override IOutput<TValue> Create<TValue>(TValue value,
+            OutputSpecificityCode resultSpecificityCode, ErrorInformation? errorInformation, string originationSource,
+            OutputDetails? details = null)
         {
-            var output = base.Create(value, outputInformation);
+            var output = base.Create(value, resultSpecificityCode, errorInformation, originationSource, details);
             LogOutput(output);
 
             return output;

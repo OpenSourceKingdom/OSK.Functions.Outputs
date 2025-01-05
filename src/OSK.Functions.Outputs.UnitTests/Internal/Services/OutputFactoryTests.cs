@@ -21,209 +21,215 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
 
         #endregion
 
-        #region Create(OutputInformation)
+        #region CreatePage
 
         [Fact]
-        public void Create_OutputInformation_NullInformation_ThrowsArgumentNullException()
+        public void CreatePage_NullItems_ThrowsArgumentNullException()
         {
             // Arrange/Act/Assert
-            Assert.Throws<ArgumentNullException>(() => _factory.Create(null));
+            Assert.Throws<ArgumentNullException>(() => _factory.CreatePage<int>(null, 0, 0, null));
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Error)]
-        [InlineData(FunctionResult.Failed)]
-        [InlineData(FunctionResult.Fault)]
-        public void Create_OutputInformation_ErrorResults_NoErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
+        [Fact]
+        public void CreatePage_InvalidSkip_ThrowsArgumentOutOfRangeException()
         {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, null, OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
+            // Arrange/Act/Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => _factory.CreatePage([1, 2], -1, 1, null));
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Success)]
-        public void Create_OutputInformation_SuccessResults_HasErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
+        [Fact]
+        public void CreatePage_InvalidTake_ThrowsArgumentOutOfRangeException()
         {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, new ErrorInformation(), OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
+            // Arrange/Act/Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => _factory.CreatePage([1, 2], 0, -1, null));
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Failed)]
-        [InlineData(FunctionResult.Error)]
-        [InlineData(FunctionResult.Fault)]
-        public void Create_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
+        [Fact]
+        public void CreatePage_Valid_ReturnsSuccessfully()
         {
             // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.ResourceNotFound, new ErrorInformation([new Error("A bad day")]), OutputDetails.DefaultSource);
+            int[] items = [1, 2, 3];
+            var skip = 10;
+            var take = 39;
+            var total = 117;
 
             // Act
-            var output = _factory.Create(outputInformation);
+            var page = _factory.CreatePage(items, skip, take, total);
 
             // Assert
-            Assert.False(output.IsSuccessful);
-            Assert.NotNull(output.ErrorInformation);
-            Assert.Equal(functionResult, output.Details.Result);
-            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
-            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
-        }
-
-        [Theory]
-        [InlineData(FunctionResult.Success, ResultSpecificityCode.BadGateway)]
-        [InlineData(FunctionResult.Success, ResultSpecificityCode.UnspecifiedException)]
-        [InlineData(FunctionResult.Success, ResultSpecificityCode.ResourceNotFound)]
-        public void Create_OutputInformation_SuccessResults_HasNoErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
-            ResultSpecificityCode invalidCode)
-        {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, invalidCode, null, OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
-        }
-
-        [Theory]
-        [InlineData(FunctionResult.Failed, ResultSpecificityCode.Created)]
-        [InlineData(FunctionResult.Error, ResultSpecificityCode.Updated)]
-        [InlineData(FunctionResult.Fault, ResultSpecificityCode.Deleted)]
-        public void Create_OutputInformation_ErrorResults_HasErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
-            ResultSpecificityCode invalidCode)
-        {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, invalidCode, new ErrorInformation(), OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(outputInformation));
-        }
-
-        [Theory]
-        [InlineData(FunctionResult.Success)]
-        public void Create_OutputInformation_SuccessResults_NoErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
-        {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.Accepted, null, OutputDetails.DefaultSource);
-
-            // Act
-            var output = _factory.Create(outputInformation);
-
-            // Assert
-            Assert.True(output.IsSuccessful);
-            Assert.Null(output.ErrorInformation);
-            Assert.Equal(functionResult, output.Details.Result);
-            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
-            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
+            Assert.Equal(items, page.Values);
+            Assert.Equal(skip, page.Skip);
+            Assert.Equal(take, page.Take);
+            Assert.Equal(total, page.Total);
         }
 
         #endregion
 
-        #region Create(Value, OutputInformation)
+        #region Create(TValue)
 
         [Fact]
-        public void Create_Value_OutputInformation_NullInformation_ThrowsArgumentNullException()
+        public void Create_TValue_SuccessfulOutput_HasErrorInformation_ThrowsInvalidOperationException()
         {
             // Arrange/Act/Assert
-            Assert.Throws<ArgumentNullException>(() => _factory.Create(1, null));
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, OutputSpecificityCode.Success,
+                new ErrorInformation(new Exception()), OutputStatusCode.DefaultSource, null));
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Error)]
-        [InlineData(FunctionResult.Failed)]
-        [InlineData(FunctionResult.Fault)]
-        public void Create_Value_OutputInformation_ErrorResults_NoErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
+        [Fact]
+        public void Create_TValue_FailureOutput_HasNoErrorInformation_ThrowsInvalidOperationException()
         {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, null, OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
+            // Arrange/Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, OutputSpecificityCode.InvalidParameter,
+                null, OutputStatusCode.DefaultSource, null));
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Success)]
-        public void Create_Value_OutputInformation_SuccessResults_HasErrorInformation_ThrowsInvalidOperationException(FunctionResult functionResult)
+        [Fact]
+        public void Create_TValue_FailureOutput_HasErrorInformationWithoutValidValues_ThrowsInvalidOperationException()
         {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.None, new ErrorInformation(), OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
+            // Arrange/Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, OutputSpecificityCode.InvalidParameter,
+                new ErrorInformation(null), OutputStatusCode.DefaultSource, null));
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Success, ResultSpecificityCode.BadGateway)]
-        [InlineData(FunctionResult.Success, ResultSpecificityCode.UnspecifiedException)]
-        [InlineData(FunctionResult.Success, ResultSpecificityCode.ResourceNotFound)]
-        public void Create_Value_OutputInformation_SuccessResults_HasNoErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
-            ResultSpecificityCode invalidCode)
+        [Fact]
+        public void Create_TValue_FailureOutput_ValidError_ReturnsSuccessfully()
         {
             // Arrange
-            var outputInformation = new OutputInformation(functionResult, invalidCode, null, OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
-        }
-
-        [Theory]
-        [InlineData(FunctionResult.Failed, ResultSpecificityCode.Created)]
-        [InlineData(FunctionResult.Error, ResultSpecificityCode.Updated)]
-        [InlineData(FunctionResult.Fault, ResultSpecificityCode.Deleted)]
-        public void Create_Value_OutputInformation_ErrorResults_HasErrorInformation_InvalidSpecificityCode_ThrowsInvalidOperationException(FunctionResult functionResult,
-            ResultSpecificityCode invalidCode)
-        {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, invalidCode, new ErrorInformation(), OutputDetails.DefaultSource);
-
-            // Act/Assert
-            Assert.Throws<InvalidOperationException>(() => _factory.Create(1, outputInformation));
-        }
-
-        [Theory]
-        [InlineData(FunctionResult.Failed, ResultSpecificityCode.Locked)]
-        [InlineData(FunctionResult.Error, ResultSpecificityCode.ResourceNotFound)]
-        [InlineData(FunctionResult.Fault, ResultSpecificityCode.UnspecifiedException)]
-        public void Create_Value_OutputInformation_ErrorsResults_HasErrorInformation_ReturnsSuccessfully(FunctionResult functionResult,
-            ResultSpecificityCode validSpecificity)
-        {
-            // Arrange
-            var outputInformation = new OutputInformation(functionResult, validSpecificity, 
-                new ErrorInformation(new Exception()), OutputDetails.DefaultSource);
+            var error = new ErrorInformation(new Error("Hello World"));
+            var specificityCode = OutputSpecificityCode.Locked;
+            var originationSource = "NoWay";
 
             // Act
-            var output = _factory.Create(default(int), outputInformation);
+            var output = _factory.Create(specificityCode, error, originationSource, null);
 
             // Assert
             Assert.False(output.IsSuccessful);
-            Assert.NotNull(output.ErrorInformation);
-            Assert.Equal(functionResult, output.Details.Result);
-            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
-            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
+            Assert.Equal(specificityCode, output.StatusCode.SpecificityCode);
+            Assert.Equal(originationSource, output.StatusCode.OriginationSource);
+            Assert.NotNull(output.ErrorInformation?.Error);
+            Assert.Equal(error.Error!.Value.Message, output.ErrorInformation.Value.Error.Value.Message);
         }
 
-        [Theory]
-        [InlineData(FunctionResult.Success)]
-        public void Create_Value_OutputInformation_SuccessResults_NoErrorInformation_ReturnsSuccessfully(FunctionResult functionResult)
+        [Fact]
+        public void Create_TValue_FailureOutput_ValidException_ReturnsSuccessfully()
         {
             // Arrange
-            var outputInformation = new OutputInformation(functionResult, ResultSpecificityCode.Accepted, null, OutputDetails.DefaultSource);
+            var error = new ErrorInformation(new Exception("Hello world"));
+            var specificityCode = OutputSpecificityCode.BadGateway;
+            var originationSource = "NoWay";
 
             // Act
-            var output = _factory.Create(1, outputInformation);
+            var output = _factory.Create(specificityCode, error, originationSource, null);
+
+            // Assert
+            Assert.False(output.IsSuccessful);
+            Assert.Equal(specificityCode, output.StatusCode.SpecificityCode);
+            Assert.Equal(originationSource, output.StatusCode.OriginationSource);
+            Assert.NotNull(output.ErrorInformation?.Exception);
+            Assert.Equal(error.Exception!.Message, output.ErrorInformation.Value.Exception.Message);
+        }
+
+        [Fact]
+        public void Create_TValue_FailureOutput_ValidSuccess_ReturnsSuccessfully()
+        {
+            // Arrange
+            var specificityCode = OutputSpecificityCode.Success;
+            var originationSource = "NoWay";
+
+            // Act
+            var output = _factory.Create(specificityCode, null, originationSource, null);
 
             // Assert
             Assert.True(output.IsSuccessful);
-            Assert.Null(output.ErrorInformation);
-            Assert.Equal(1, output.Value);
-            Assert.Equal(functionResult, output.Details.Result);
-            Assert.Equal(outputInformation.OriginationSource, output.Details.OriginationSource);
-            Assert.Equal(outputInformation.ResultSpecificityCode, output.Details.SpecificityCode);
+            Assert.Equal(specificityCode, output.StatusCode.SpecificityCode);
+            Assert.Equal(originationSource, output.StatusCode.OriginationSource);
+            Assert.Null(output.ErrorInformation?.Exception);
         }
 
         #endregion
+
+        #region Create
+
+        [Fact]
+        public void Create_SuccessfulOutput_HasErrorInformation_ThrowsInvalidOperationException()
+        {
+            // Arrange/Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(OutputSpecificityCode.Success,
+                new ErrorInformation(new Exception()), OutputStatusCode.DefaultSource, null));
+        }
+
+        [Fact]
+        public void Create_FailureOutput_HasNoErrorInformation_ThrowsInvalidOperationException()
+        {
+            // Arrange/Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(OutputSpecificityCode.InvalidParameter,
+                null, OutputStatusCode.DefaultSource, null));
+        }
+
+        [Fact]
+        public void Create_FailureOutput_HasErrorInformationWithoutValidValues_ThrowsInvalidOperationException()
+        {
+            // Arrange/Act/Assert
+            Assert.Throws<InvalidOperationException>(() => _factory.Create(OutputSpecificityCode.InvalidParameter,
+                new ErrorInformation(null), OutputStatusCode.DefaultSource, null));
+        }
+
+        [Fact]
+        public void Create_FailureOutput_ValidError_ReturnsSuccessfully()
+        {
+            // Arrange
+            var error = new ErrorInformation(new Error("Hello World"));
+            var specificityCode = OutputSpecificityCode.Locked;
+            var originationSource = "NoWay";
+
+            // Act
+            var output = _factory.Create(specificityCode, error, originationSource, null);
+
+            // Assert
+            Assert.False(output.IsSuccessful);
+            Assert.Equal(specificityCode, output.StatusCode.SpecificityCode);
+            Assert.Equal(originationSource, output.StatusCode.OriginationSource);
+            Assert.NotNull(output.ErrorInformation?.Error);
+            Assert.Equal(error.Error!.Value.Message, output.ErrorInformation.Value.Error.Value.Message);
+        }
+
+        [Fact]
+        public void Create_FailureOutput_ValidException_ReturnsSuccessfully()
+        {
+            // Arrange
+            var error = new ErrorInformation(new Exception("Hello world"));
+            var specificityCode = OutputSpecificityCode.BadGateway;
+            var originationSource = "NoWay";
+
+            // Act
+            var output = _factory.Create(specificityCode, error, originationSource, null);
+
+            // Assert
+            Assert.False(output.IsSuccessful);
+            Assert.Equal(specificityCode, output.StatusCode.SpecificityCode);
+            Assert.Equal(originationSource, output.StatusCode.OriginationSource);
+            Assert.NotNull(output.ErrorInformation?.Exception);
+            Assert.Equal(error.Exception!.Message, output.ErrorInformation.Value.Exception.Message);
+        }
+
+        [Fact]
+        public void Create_FailureOutput_ValidSuccess_ReturnsSuccessfully()
+        {
+            // Arrange
+            var specificityCode = OutputSpecificityCode.Success;
+            var originationSource = "NoWay";
+
+            // Act
+            var output = _factory.Create(specificityCode, null, originationSource, null);
+
+            // Assert
+            Assert.True(output.IsSuccessful);
+            Assert.Equal(specificityCode, output.StatusCode.SpecificityCode);
+            Assert.Equal(originationSource, output.StatusCode.OriginationSource);
+            Assert.Null(output.ErrorInformation?.Exception);
+        }
+
+        #endregion
+
     }
 }

@@ -1,12 +1,15 @@
-﻿using OSK.Hexagonal.MetaData;
+﻿using System.Collections.Generic;
+using OSK.Hexagonal.MetaData;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
     [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
     public interface IOutputFactory
     {
-        IOutput Create(OutputInformation outputInformation);
+        IOutputResponseBuilder CreateOutput();
 
-        IOutput<TValue> Create<TValue>(TValue value, OutputInformation outputInformation);
+        IOutputResponseBuilder<TValue> CreateOutput<TValue>();
+
+        IPaginatedOutput<TValue> CreatePage<TValue>(IEnumerable<TValue> values, long skip, long take, long? total);
     }
 }

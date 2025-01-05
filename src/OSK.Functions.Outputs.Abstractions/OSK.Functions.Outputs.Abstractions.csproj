@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<LangVersion>12</LangVersion>
-		<Nullable>enable</Nullable>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Description>Provides an abstraction for a .NET mechanism that returns outputs or error information to callers in a simple to use and consolidated way.</Description>
 		<PackageTags>OpenSourceKingdom, OpenSource, Functions, Outputs, Result, Error, Response, Abstraction</PackageTags>

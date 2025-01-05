@@ -2,23 +2,16 @@
 
 namespace OSK.Functions.Outputs.Models
 {
-    public class Output : IOutput
+    public class Output(OutputStatusCode statusCode, ErrorInformation? errorInformation, OutputDetails? details) 
+        : IOutput
     {
-        #region Constructors
-
-        internal Output(OutputDetails details, ErrorInformation? errorInformation)
-        {
-            Details = details;
-            ErrorInformation = errorInformation;
-        }
-
-        #endregion
-
         #region IOutput
 
-        public OutputDetails Details { get; }
+        public OutputStatusCode StatusCode => statusCode;
 
-        public ErrorInformation? ErrorInformation { get; }
+        public ErrorInformation? ErrorInformation => errorInformation;
+
+        public OutputDetails? AdvancedDetails => details;
 
         public virtual IOutput<TValue> AsOutput<TValue>()
         {

@@ -7,14 +7,15 @@ namespace OSK.Functions.Outputs.Models
     {
         #region Constructors
 
-        internal Output(TValue value, OutputDetails statusCode, ErrorInformation? errorInformation)
-            : base(statusCode, errorInformation)
+        internal Output(TValue value, OutputStatusCode statusCode, ErrorInformation? errorInformation,
+            OutputDetails? details)
+            : base(statusCode, errorInformation, details)
         {
             Value = value;
         }
 
         internal Output(Output output)
-            : base(output.Details, output.ErrorInformation)
+            : base(output.StatusCode, output.ErrorInformation, output.AdvancedDetails)
         {
             Value = default;
         }
@@ -27,10 +28,9 @@ namespace OSK.Functions.Outputs.Models
 
         public override IOutput<TType> AsOutput<TType>()
         {
-            if (Details.IsSuccessful)
+            if (StatusCode.IsSuccessful)
             {
-                // Prevent a loss of the typed value due to boxing/dropping it for the type change.
-                // This is mainly used for passing errors back up to callers
+                // This cast should only be occurring on error cases
                 throw new InvalidOperationException("Unable to cast a typed output that was successful.");
             }
 

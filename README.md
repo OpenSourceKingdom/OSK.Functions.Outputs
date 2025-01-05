@@ -26,8 +26,8 @@ later processing.
 
 For future codes that may be added, the following represents the different groupings of codes:
 * Ranges of [`20-29`, `200-299`, ... ] represent `successful function result` codes as well as `informational specificity` related codes
-* Ranges of [`30-39`, `300-399`, ... ] represent `error function result` codes as well as `network specificity` related codes
-* Ranges of [`40-49`, `400-499`, ... ] represent `failed function result` codes as well as `validation specificity` related codes 
+* Ranges of [`30-39`, `300-399`, ... ] represent `network specificity` related codes
+* Ranges of [`40-49`, `400-499`, ... ] represent`error function result` codes as well as `validation specificity` related codes 
 * Ranges of [`50-59`, `500-599`, ... ] represent `fault function result` codes as well as `operation specificity` related codes
   * For example, an a specific issue with the system encountering deadlocks could be represented via this range
 

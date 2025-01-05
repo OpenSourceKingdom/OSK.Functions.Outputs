@@ -4,8 +4,8 @@ using System.Text;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    public interface IOutput<TValue>: IOutput
+    public interface IOutputResponse<TValue>: IOutputResponse
     {
-        TValue Value { get; }
+        new IOutput<TValue>[] Outputs { get; }
     }
 }

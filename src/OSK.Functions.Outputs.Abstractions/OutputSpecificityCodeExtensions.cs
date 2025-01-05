@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    public interface IOutput<TValue>: IOutput
+    public static class OutputSpecificityCodeExtensions
     {
-        TValue Value { get; }
     }
 }
