@@ -3,7 +3,7 @@ using OSK.Hexagonal.MetaData;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
+    [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided, HexagonalIntegrationType.ConsumerPointOfEntry)]
     public interface IOutputFactory
     {
         IOutputResponseBuilder CreateOutput();

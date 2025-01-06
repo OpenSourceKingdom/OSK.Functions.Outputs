@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OSK.Hexagonal.MetaData;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
+    [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
     public interface IPaginatedOutput<TValue>
     {
         /// <summary>

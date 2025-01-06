@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-
-namespace OSK.Functions.Outputs.Abstractions
+﻿namespace OSK.Functions.Outputs.Abstractions
 {
     public static class OutputExtensions
     {

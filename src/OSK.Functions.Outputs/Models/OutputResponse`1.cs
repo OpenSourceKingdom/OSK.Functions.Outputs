@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using OSK.Functions.Outputs.Abstractions;
 
 namespace OSK.Functions.Outputs.Models

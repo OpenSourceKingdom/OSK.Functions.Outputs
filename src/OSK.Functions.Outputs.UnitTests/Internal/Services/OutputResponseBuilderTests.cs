@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using OSK.Functions.Outputs.Abstractions;
-using OSK.Functions.Outputs.Internal.Services;
 using Xunit;
-using Xunit.Sdk;
 
 namespace OSK.Functions.Outputs.UnitTests.Internal.Services
 {
