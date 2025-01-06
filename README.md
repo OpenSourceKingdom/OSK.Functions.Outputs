@@ -36,6 +36,10 @@ The abstraction layer should allow libraries that only need access to the interf
 unnecessary dependency requirements. An application should add the core logic and any extra libraries being added can simply add the dependency for the abstractions
 project.
 
+# Mocks
+The mocks project provides a quick set of factory objects that should help with streamlining unit tests with the library. They are set up to avoid running core output logic and
+to skip any ILogger dependency requirement. By using the needed `MockOutputFactory` or `MockOutputFactory<T>` objects, users should be able to skip needing to mock the necessary ports for DI
+
 # Usage: Consumers
  The central focal point to this library is the `IOutputFactory` and `IOutputFactory<T>` objects. By adding a dependency to the `Outputs.Logging` or base `Outputs`,
  an application will gain access to the functionality through dependency injection. `IOutputFactory` is a basic implementation that avoids a dependency on 

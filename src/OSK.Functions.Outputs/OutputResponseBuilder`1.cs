@@ -6,9 +6,9 @@ using System.Text;
 using OSK.Functions.Outputs.Abstractions;
 using OSK.Functions.Outputs.Models;
 
-namespace OSK.Functions.Outputs.Internal.Services
+namespace OSK.Functions.Outputs
 {
-    internal class OutputBuilder<TValue>(OutputFactory outputFactory) : IOutputResponseBuilder<TValue>
+    public class OutputResponseBuilder<TValue>(IOutputValidator validator) : IOutputResponseBuilder<TValue>
     {
         #region Variables
 
@@ -46,26 +46,35 @@ namespace OSK.Functions.Outputs.Internal.Services
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var output = outputFactory.Create(default(TValue), OutputSpecificityCode.UnknownError,
-                new ErrorInformation(exception), _originationSource, GetDetails());
+            var output = new Output<TValue>(default, new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
+                new ErrorInformation(exception), GetDetails());
+            validator.Validate(output);
+
             _outputs.Add(output);
+            _stopWatch = null;
 
             return this;
         }
 
         public IOutputResponseBuilder<TValue> AddError(string error, OutputSpecificityCode specificityCode)
         {
-            var output = outputFactory.Create(default(TValue), specificityCode, 
-                new ErrorInformation(new Error(error)), _originationSource, GetDetails());
+            var output = new Output<TValue>(default, new OutputStatusCode(specificityCode, _originationSource), new ErrorInformation(new Error(error)),
+                GetDetails());
+            validator.Validate(output);
+
             _outputs.Add(output);
+            _stopWatch = null;
 
             return this;
         }
 
         public IOutputResponseBuilder<TValue> AddSuccess(TValue value, OutputSpecificityCode specificityCode = OutputSpecificityCode.Success)
         {
-            var output = outputFactory.Create(value, specificityCode, null, _originationSource, GetDetails());
+            var output = new Output<TValue>(value, new OutputStatusCode(specificityCode, _originationSource), null, GetDetails());
+            validator.Validate(output);
+
             _outputs.Add(output);
+            _stopWatch = null;
 
             return this;
         }
@@ -76,7 +85,7 @@ namespace OSK.Functions.Outputs.Internal.Services
             {
                 throw new InvalidOperationException("No outputs have been added to build");
             }
-            if (_outputs.Count == 1)    
+            if (_outputs.Count == 1)
             {
                 return new OutputResponse<TValue>([_outputs[0]], _outputs[0].StatusCode, _outputs[0].AdvancedDetails);
             }

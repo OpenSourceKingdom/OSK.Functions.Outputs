@@ -5,25 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using OSK.Functions.Outputs.Abstractions;
-using OSK.Functions.Outputs.Internal.Services;
 using Xunit;
-using Xunit.Sdk;
 
 namespace OSK.Functions.Outputs.UnitTests.Internal.Services
 {
-    public class OutputResponseBuilderTests
+    public class OutputResponseBuilder_T_UnitTests
     {
         #region Variables
 
-        private readonly IOutputResponseBuilder _builder;
+        private readonly IOutputResponseBuilder<int> _builder;
 
         #endregion
 
         #region Constructors
 
-        public OutputResponseBuilderTests()
+        public OutputResponseBuilder_T_UnitTests()
         {
-            _builder = new OutputResponseBuilder(Mock.Of<IOutputValidator>());
+            _builder = new OutputResponseBuilder<int>(Mock.Of<IOutputValidator>());
         }
 
         #endregion
@@ -102,7 +100,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
             var specificityCode = OutputSpecificityCode.Accepted;
 
             _builder.WithOrigination(origination)
-                .AddSuccess(specificityCode);
+                .AddSuccess(1, specificityCode);
 
             // Act
             var response = _builder.BuildResponse();
@@ -114,6 +112,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
             Assert.Equal(specificityCode, response.StatusCode.SpecificityCode);
             Assert.Equal(origination, response.StatusCode.OriginationSource);
 
+            Assert.Equal(1, response.Outputs[0].Value);
             Assert.Equal(specificityCode, response.Outputs[0].StatusCode.SpecificityCode);
             Assert.Equal(origination, response.Outputs[0].StatusCode.OriginationSource);
             Assert.Null(response.Outputs[0].ErrorInformation);
@@ -125,18 +124,20 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
             // Arrange
             var origination = "Hello World";
             var successCode1 = OutputSpecificityCode.Accepted;
+            var successValue1 = 219;
 
             var successCode2 = OutputSpecificityCode.Success;
+            var successValue2 = 12;
 
             var errorMessage = "error1";
             var errorCode = OutputSpecificityCode.DuplicateData;
 
             _builder.WithOrigination(origination)
                 .AddError(errorMessage, errorCode)
-                .AddSuccess(successCode1)
+                .AddSuccess(successValue1, successCode1)
                 .WithRunTimeMetric()
                 .WithTimeStamp()
-                .AddSuccess(successCode2);
+                .AddSuccess(successValue2, successCode2);
 
             // Act
             var response = _builder.BuildResponse();
@@ -157,12 +158,14 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
             Assert.Null(error1.AdvancedDetails);
 
             var success1 = response.Outputs[1];
+            Assert.Equal(successValue1, success1.Value);
             Assert.Equal(successCode1, success1.StatusCode.SpecificityCode);
             Assert.Equal(origination, success1.StatusCode.OriginationSource);
             Assert.Null(success1.ErrorInformation);
             Assert.Null(success1.AdvancedDetails);
 
             var success2 = response.Outputs[2];
+            Assert.Equal(successValue2, success2.Value);
             Assert.Equal(successCode1, success1.StatusCode.SpecificityCode);
             Assert.Equal(origination, success1.StatusCode.OriginationSource);
             Assert.Null(success2.ErrorInformation);

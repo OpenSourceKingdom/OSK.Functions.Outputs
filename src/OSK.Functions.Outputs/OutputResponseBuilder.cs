@@ -6,9 +6,9 @@ using System.Text;
 using OSK.Functions.Outputs.Abstractions;
 using OSK.Functions.Outputs.Models;
 
-namespace OSK.Functions.Outputs.Internal.Services
+namespace OSK.Functions.Outputs
 {
-    internal class OutputResponseBuilder(OutputFactory outputFactory) : IOutputResponseBuilder
+    public class OutputResponseBuilder(IOutputValidator validator) : IOutputResponseBuilder
     {
         #region Variables
 
@@ -16,7 +16,7 @@ namespace OSK.Functions.Outputs.Internal.Services
         private Stopwatch _stopWatch;
         private bool _includeTimeStamp;
 
-        private readonly IList<IOutput> _outputs;
+        private readonly IList<IOutput> _outputs = [];
 
         #endregion
 
@@ -46,19 +46,23 @@ namespace OSK.Functions.Outputs.Internal.Services
             {
                 throw new ArgumentNullException(nameof(exception));
             }
-            
-            var output = outputFactory.Create(OutputSpecificityCode.UnknownError,
-                new ErrorInformation(exception), _originationSource, GetDetails());
+
+            var output = new Output(new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
+                new ErrorInformation(exception), GetDetails());
+            validator.Validate(output);
+
             _outputs.Add(output);
             _stopWatch = null;
-            
+
             return this;
         }
 
         public IOutputResponseBuilder AddError(string error, OutputSpecificityCode specificityCode)
         {
-            var output = outputFactory.Create(specificityCode, new ErrorInformation(new Error(error)),
-                _originationSource, GetDetails());
+            var output = new Output(new OutputStatusCode(specificityCode, _originationSource), new ErrorInformation(new Error(error)),
+                GetDetails());
+            validator.Validate(output);
+
             _outputs.Add(output);
             _stopWatch = null;
 
@@ -67,10 +71,12 @@ namespace OSK.Functions.Outputs.Internal.Services
 
         public IOutputResponseBuilder AddSuccess(OutputSpecificityCode specificityCode = OutputSpecificityCode.Success)
         {
-            var output = outputFactory.Create(specificityCode, null, _originationSource, GetDetails());
+            var output = new Output(new OutputStatusCode(specificityCode, _originationSource), null, GetDetails());
+            validator.Validate(output);
+
             _outputs.Add(output);
             _stopWatch = null;
-            
+
             return this;
         }
 
@@ -94,10 +100,10 @@ namespace OSK.Functions.Outputs.Internal.Services
                 if (output.AdvancedDetails.HasValue)
                 {
                     totalRuntime = output.AdvancedDetails.Value.RunTimeInMilliseconds.HasValue
-                        ? totalRuntime.GetValueOrDefault() +  output.AdvancedDetails.Value.RunTimeInMilliseconds
+                        ? totalRuntime.GetValueOrDefault() + output.AdvancedDetails.Value.RunTimeInMilliseconds
                         : totalRuntime;
                     outputTimeStamp = output.AdvancedDetails.Value.CompletionTime.HasValue
-                        ? outputTimeStamp.GetValueOrDefault() < output.AdvancedDetails.Value.CompletionTime 
+                        ? outputTimeStamp.GetValueOrDefault() < output.AdvancedDetails.Value.CompletionTime
                             ? output.AdvancedDetails.Value.CompletionTime
                             : outputTimeStamp
                         : outputTimeStamp;
@@ -121,7 +127,7 @@ namespace OSK.Functions.Outputs.Internal.Services
                 ? new OutputDetails(totalRuntime, outputTimeStamp)
                 : null;
 
-            return new OutputResponse([.. _outputs], 
+            return new OutputResponse([.. _outputs],
                 new OutputStatusCode(OutputSpecificityCode.MultipleOutputs, _originationSource),
                 details);
         }
@@ -132,8 +138,8 @@ namespace OSK.Functions.Outputs.Internal.Services
 
         private OutputDetails? GetDetails()
         {
-            return _stopWatch is not null || _includeTimeStamp 
-                ? new OutputDetails(_stopWatch?.ElapsedMilliseconds, _includeTimeStamp ? DateTime.UtcNow : null) 
+            return _stopWatch is not null || _includeTimeStamp
+                ? new OutputDetails(_stopWatch?.ElapsedMilliseconds, _includeTimeStamp ? DateTime.UtcNow : null)
                 : null;
         }
 

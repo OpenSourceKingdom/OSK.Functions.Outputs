@@ -14,7 +14,7 @@ namespace OSK.Functions.Outputs.Abstractions
         public static string GetErrorString(this IOutput output)
         {
             if (output.ErrorInformation?.Exception is null
-                || output.ErrorInformation?.Error is null)
+                && output.ErrorInformation?.Error is null)
             {
                 return string.Empty;
             }

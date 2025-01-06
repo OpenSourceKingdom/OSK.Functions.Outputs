@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Description>An implementation for OSK.Functions.Outputs meant mainly for unit testing purposes</Description>
+		<PackageTags>OpenSourceKingdom, OpenSource, Functions, Outputs, Result, Error, Response, UnitTests</PackageTags>
+		<Title>OSK.Functions.Outputs.Mocks</Title>
+
+		<RepositoryUrl>https://github.com/OpenSourceKingdom/OSK.Functions.Outputs</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>CS1591</NoWarn>
+		<Authors>BlankDev117</Authors>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+		<ProjectReference Include="..\OSK.Functions.Outputs.Abstractions\OSK.Functions.Outputs.Abstractions.csproj" />
+		<ProjectReference Include="..\OSK.Functions.Outputs.Logging.Abstractions\OSK.Functions.Outputs.Logging.Abstractions.csproj" />
+		<ProjectReference Include="..\OSK.Functions.Outputs\OSK.Functions.Outputs.csproj" />
+	</ItemGroup>
+
+</Project>

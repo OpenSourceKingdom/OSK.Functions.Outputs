@@ -10,7 +10,7 @@ namespace OSK.Functions.Outputs.Models
         OutputStatusCode statusCode, OutputDetails? details)
         : IOutputResponse<TValue>
     {
-        #region IAggregatedOutput
+        #region IOutputResponse
 
         public bool IsSuccessful => statusCode.IsSuccessful;
 

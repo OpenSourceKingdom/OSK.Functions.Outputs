@@ -9,23 +9,16 @@ namespace OSK.Functions.Outputs.Logging.Internal.Services
     {
         #region IOutputFactory
 
-        internal override IOutput Create(OutputSpecificityCode resultSpecificityCode,
-            ErrorInformation? errorInformation, string originationSource, OutputDetails? details = null)
+        public override void Validate(IOutput output)
         {
-            var output = base.Create(resultSpecificityCode, errorInformation, originationSource, details);
+            base.Validate(output);
             LogOutput(output);
-
-            return output;
         }
 
-        internal override IOutput<TValue> Create<TValue>(TValue value,
-            OutputSpecificityCode resultSpecificityCode, ErrorInformation? errorInformation, string originationSource,
-            OutputDetails? details = null)
+        public override void Validate<TValue>(IOutput<TValue> output)
         {
-            var output = base.Create(value, resultSpecificityCode, errorInformation, originationSource, details);
+            base.Validate(output);
             LogOutput(output);
-
-            return output;
         }
 
         #endregion
