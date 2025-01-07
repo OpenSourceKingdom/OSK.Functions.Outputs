@@ -1,6 +1,8 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
+using OSK.Functions.Outputs.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OSK.Functions.Outputs.Mocks
 {
@@ -18,18 +20,18 @@ namespace OSK.Functions.Outputs.Mocks
 
         public IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation, OutputDetails? advancedDetails)
         {
-            throw new NotImplementedException();
+            return new Output(statusCode, errorInformation, advancedDetails);
         }
 
         public IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, ErrorInformation? errorInformation,
             OutputDetails? advancedDetails)
         {
-            throw new NotImplementedException();
+            return new Output<TValue>(value, statusCode, errorInformation, advancedDetails);
         }
 
         public IPaginatedOutput<TValue> CreatePage<TValue>(IEnumerable<TValue> values, long skip, long take, long? total)
         {
-            throw new NotImplementedException();
+            return new PaginatedOutput<TValue>(values.ToList(), skip, take, total);
         }
     }
 }
