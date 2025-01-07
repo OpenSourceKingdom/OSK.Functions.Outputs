@@ -6,7 +6,7 @@ using OSK.Functions.Outputs.Models;
 
 namespace OSK.Functions.Outputs
 {
-    public class OutputResponseBuilder<TValue>(IOutputValidator validator) : IOutputResponseBuilder<TValue>
+    public class OutputResponseBuilder<TValue>(IOutputFactory factory) : IOutputResponseBuilder<TValue>
     {
         #region Variables
 
@@ -44,10 +44,10 @@ namespace OSK.Functions.Outputs
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var output = new Output<TValue>(default, new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
-                new ErrorInformation(exception), GetDetails());
-            validator.Validate(output);
-
+            var output = factory.CreateOutput<TValue>(default, 
+                new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
+                new ErrorInformation(exception), 
+                GetDetails());
             _outputs.Add(output);
             _stopWatch = null;
 
@@ -56,9 +56,10 @@ namespace OSK.Functions.Outputs
 
         public IOutputResponseBuilder<TValue> AddError(string error, OutputSpecificityCode specificityCode)
         {
-            var output = new Output<TValue>(default, new OutputStatusCode(specificityCode, _originationSource), new ErrorInformation(new Error(error)),
+            var output = factory.CreateOutput<TValue>(default, 
+                new OutputStatusCode(specificityCode, _originationSource), 
+                new ErrorInformation(new Error(error)),
                 GetDetails());
-            validator.Validate(output);
 
             _outputs.Add(output);
             _stopWatch = null;
@@ -68,8 +69,10 @@ namespace OSK.Functions.Outputs
 
         public IOutputResponseBuilder<TValue> AddSuccess(TValue value, OutputSpecificityCode specificityCode = OutputSpecificityCode.Success)
         {
-            var output = new Output<TValue>(value, new OutputStatusCode(specificityCode, _originationSource), null, GetDetails());
-            validator.Validate(output);
+            var output = factory.CreateOutput(value,
+                new OutputStatusCode(specificityCode, _originationSource), 
+                null, 
+                GetDetails());
 
             _outputs.Add(output);
             _stopWatch = null;

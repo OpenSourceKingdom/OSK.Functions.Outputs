@@ -6,16 +6,33 @@ using System.Linq;
 
 namespace OSK.Functions.Outputs.Internal.Services
 {
-    internal class OutputFactory : IOutputFactory, IOutputValidator
+    internal class OutputFactory : IOutputFactory
     {
         #region IOutputFactory
 
-        public IOutputResponseBuilder CreateOutput()
+        public virtual IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation, OutputDetails? advancedDetails)
+        {
+            var output = new Output(statusCode, errorInformation, advancedDetails);
+            Validate(output);
+
+            return output;
+        }
+
+        public virtual IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, ErrorInformation? errorInformation, 
+            OutputDetails? advancedDetails)
+        {
+            var output = new Output<TValue>(value, statusCode, errorInformation, advancedDetails);
+            Validate(output);
+
+            return output;
+        }
+
+        public IOutputResponseBuilder BuildOutput()
         {
             return new OutputResponseBuilder(this);
         }
 
-        public IOutputResponseBuilder<TValue> CreateOutput<TValue>()
+        public IOutputResponseBuilder<TValue> BuildOutput<TValue>()
         {
             return new OutputResponseBuilder<TValue>(this);
         }
@@ -40,9 +57,9 @@ namespace OSK.Functions.Outputs.Internal.Services
 
         #endregion
 
-        #region IOutputValidator
+        #region Helpers
 
-        public virtual void Validate(IOutput output)
+        internal void Validate(IOutput output)
         {
             if (output.StatusCode.IsSuccessful)
             {
@@ -64,7 +81,7 @@ namespace OSK.Functions.Outputs.Internal.Services
             }
         }
 
-        public virtual void Validate<TValue>(IOutput<TValue> output)
+        internal void Validate<TValue>(IOutput<TValue> output)
         {
             Validate((IOutput)output);
             if (output.IsSuccessful && output.Value is null)

@@ -1,5 +1,6 @@
 ﻿using Moq;
 using OSK.Functions.Outputs.Abstractions;
+using OSK.Functions.Outputs.Models;
 using Xunit;
 
 namespace OSK.Functions.Outputs.UnitTests.Internal.Services
@@ -8,7 +9,7 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
     {
         #region Variables
 
-        private readonly IOutputResponseBuilder<int> _builder;
+        private readonly OutputResponseBuilder<int> _builder;
 
         #endregion
 
@@ -16,7 +17,19 @@ namespace OSK.Functions.Outputs.UnitTests.Internal.Services
 
         public OutputResponseBuilder_T_UnitTests()
         {
-            _builder = new OutputResponseBuilder<int>(Mock.Of<IOutputValidator>());
+            var mockOutputFactory = new Mock<IOutputFactory>();
+
+            mockOutputFactory.Setup(m => m.CreateOutput(It.IsAny<OutputStatusCode>(),
+                It.IsAny<ErrorInformation?>(), It.IsAny<OutputDetails?>()))
+                .Returns((OutputStatusCode statusCode, ErrorInformation? error, OutputDetails? details)
+                    => new Output(statusCode, error, details));
+
+            mockOutputFactory.Setup(m => m.CreateOutput<int>(It.IsAny<int>(), It.IsAny<OutputStatusCode>(),
+                It.IsAny<ErrorInformation?>(), It.IsAny<OutputDetails?>()))
+                .Returns((int value, OutputStatusCode statusCode, ErrorInformation? error, OutputDetails? details)
+                    => new Output<int>(value, statusCode, error, details));
+
+            _builder = new OutputResponseBuilder<int>(mockOutputFactory.Object);
         }
 
         #endregion

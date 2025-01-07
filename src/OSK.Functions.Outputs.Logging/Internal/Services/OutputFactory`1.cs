@@ -8,16 +8,20 @@ namespace OSK.Functions.Outputs.Logging.Internal.Services
     {
         #region IOutputFactory
 
-        public override void Validate(IOutput output)
+        public override IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation,
+            OutputDetails? advancedDetails)
         {
-            base.Validate(output);
+            var output = base.CreateOutput(statusCode, errorInformation, advancedDetails);
             LogOutput(output);
+            return output;
         }
 
-        public override void Validate<TValue>(IOutput<TValue> output)
+        public override IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, 
+            ErrorInformation? errorInformation, OutputDetails? advancedDetails)
         {
-            base.Validate(output);
+            var output = base.CreateOutput(value, statusCode, errorInformation, advancedDetails);
             LogOutput(output);
+            return output;
         }
 
         #endregion

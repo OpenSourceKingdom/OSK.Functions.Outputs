@@ -6,7 +6,7 @@ using OSK.Functions.Outputs.Models;
 
 namespace OSK.Functions.Outputs
 {
-    public class OutputResponseBuilder(IOutputValidator validator) : IOutputResponseBuilder
+    public class OutputResponseBuilder(IOutputFactory factory) : IOutputResponseBuilder
     {
         #region Variables
 
@@ -45,10 +45,8 @@ namespace OSK.Functions.Outputs
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var output = new Output(new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
+            var output = factory.CreateOutput(new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
                 new ErrorInformation(exception), GetDetails());
-            validator.Validate(output);
-
             _outputs.Add(output);
             _stopWatch = null;
 
@@ -57,10 +55,9 @@ namespace OSK.Functions.Outputs
 
         public IOutputResponseBuilder AddError(string error, OutputSpecificityCode specificityCode)
         {
-            var output = new Output(new OutputStatusCode(specificityCode, _originationSource), new ErrorInformation(new Error(error)),
+            var output = factory.CreateOutput(new OutputStatusCode(specificityCode, _originationSource), 
+                new ErrorInformation(new Error(error)),
                 GetDetails());
-            validator.Validate(output);
-
             _outputs.Add(output);
             _stopWatch = null;
 
@@ -69,9 +66,7 @@ namespace OSK.Functions.Outputs
 
         public IOutputResponseBuilder AddSuccess(OutputSpecificityCode specificityCode = OutputSpecificityCode.Success)
         {
-            var output = new Output(new OutputStatusCode(specificityCode, _originationSource), null, GetDetails());
-            validator.Validate(output);
-
+            var output = factory.CreateOutput(new OutputStatusCode(specificityCode, _originationSource), null, GetDetails());
             _outputs.Add(output);
             _stopWatch = null;
 

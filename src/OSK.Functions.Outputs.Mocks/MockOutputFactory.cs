@@ -4,31 +4,32 @@ using System.Collections.Generic;
 
 namespace OSK.Functions.Outputs.Mocks
 {
-    public class MockOutputFactory : IOutputFactory, IOutputValidator
+    public class MockOutputFactory : IOutputFactory
     {
-        public IOutputResponseBuilder CreateOutput()
+        public IOutputResponseBuilder BuildOutput()
         {
             return new OutputResponseBuilder(this);
         }
 
-        public IOutputResponseBuilder<TValue> CreateOutput<TValue>()
+        public IOutputResponseBuilder<TValue> BuildOutput<TValue>()
         {
             return new OutputResponseBuilder<TValue>(this);
+        }
+
+        public IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation, OutputDetails? advancedDetails)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, ErrorInformation? errorInformation,
+            OutputDetails? advancedDetails)
+        {
+            throw new NotImplementedException();
         }
 
         public IPaginatedOutput<TValue> CreatePage<TValue>(IEnumerable<TValue> values, long skip, long take, long? total)
         {
             throw new NotImplementedException();
-        }
-
-        public void Validate(IOutput output)
-        {
-            // No logic necessary for mocks
-        }
-
-        public void Validate<TValue>(IOutput<TValue> output)
-        {
-            // No logic necessary for mocks
         }
     }
 }
