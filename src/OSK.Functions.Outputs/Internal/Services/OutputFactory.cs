@@ -10,104 +10,83 @@ namespace OSK.Functions.Outputs.Internal.Services
     {
         #region IOutputFactory
 
-        public virtual IOutput Create(OutputStatusCode statusCode)
+        public virtual IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation, OutputDetails? advancedDetails)
         {
-            ValidateOutput(statusCode, null, null);
-            return CreateOutput(statusCode, null, null);
+            var output = new Output(statusCode, errorInformation, advancedDetails);
+            Validate(output);
+
+            return output;
         }
 
-        public virtual IOutput Create(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public virtual IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, ErrorInformation? errorInformation, 
+            OutputDetails? advancedDetails)
         {
-            ValidateOutput(statusCode, errors, null);
-            return CreateOutput(statusCode, errors, null);
+            var output = new Output<TValue>(value, statusCode, errorInformation, advancedDetails);
+            Validate(output);
+
+            return output;
         }
 
-        public virtual IOutput Create(OutputStatusCode statusCode, Exception ex)
+        public IOutputResponseBuilder BuildResponse()
         {
-            ValidateOutput(statusCode, null, ex);
-            return CreateOutput(statusCode, null, ex);
+            return new OutputResponseBuilder(this);
         }
 
-        public virtual IOutput<TValue> Create<TValue>(TValue value, OutputStatusCode statusCode)
+        public IOutputResponseBuilder<TValue> BuildResponse<TValue>()
         {
-            ValidateOutput(value, statusCode, null, null);
-            return CreateOutput(value, statusCode, null, null);
+            return new OutputResponseBuilder<TValue>(this);
         }
 
-        public virtual IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public IPaginatedOutput<TValue> CreatePage<TValue>(IEnumerable<TValue> values, long skip, long take, long? total)
         {
-            ValidateOutput(statusCode, errors, null);
-            return CreateOutput(default(TValue), statusCode, errors, null);
-        }
+            if (values is null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+            if (skip < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(skip));
+            }
+            if (take < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(take));
+            }
 
-        public virtual IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, Exception ex)
-        {
-            ValidateOutput(statusCode, null, ex);
-            return CreateOutput(default(TValue), statusCode, null, ex);
+            return new PaginatedOutput<TValue>(values.ToList(), skip, take, total);
         }
 
         #endregion
 
         #region Helpers
 
-        private IOutput CreateOutput(OutputStatusCode statusCode, IEnumerable<Error> errors,
-            Exception ex)
+        internal void Validate(IOutput output)
         {
-            ErrorInformation? errorInformation = null;
-            if (errors != null && errors.Any())
+            if (output.StatusCode.IsSuccessful)
             {
-                errorInformation = new ErrorInformation(errors);
-            }
-            else if (ex != null)
-            {
-                errorInformation = new ErrorInformation(ex);
+                if (output.ErrorInformation != null)
+                {
+                    throw new InvalidOperationException("Unable to create a successful output that contains an error or exception.");
+                }
+                return;
             }
 
-            return new Output(statusCode, errorInformation);
+            if (output.ErrorInformation is null)
+            {
+                throw new InvalidOperationException("Unable to create an error output that contains no error information.");
+            }
+            if (output.ErrorInformation.Value.Exception is null &&
+                output.ErrorInformation.Value.Error is null)
+            {
+                throw new InvalidOperationException("Unable to create an error output without valid error information set.");
+            }
         }
 
-        private IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, 
-            IEnumerable<Error> errors, Exception ex)
+        internal void Validate<TValue>(IOutput<TValue> output)
         {
-            ErrorInformation? errorInformation = null;
-            if (errors != null && errors.Any())
-            {
-                errorInformation = new ErrorInformation(errors);
-            }
-            else if (ex != null)
-            {
-                errorInformation = new ErrorInformation(ex);
-            }
-
-            return new Output<TValue>(value, statusCode, errorInformation);
-        }
-
-        private void ValidateOutput<TValue>(TValue value, OutputStatusCode statusCode, 
-            IEnumerable<Error> errors, Exception ex)
-        {
-            ValidateOutput(statusCode, errors, ex);
-            if (statusCode.IsSuccessCode && value is null)
+            Validate((IOutput)output);
+            if (output.IsSuccessful && output.Value is null)
             {
                 throw new ArgumentNullException("A non-null value must be passed for a typed, successful, output.");
-            }
-        }
-
-        private void ValidateOutput(OutputStatusCode statusCode, IEnumerable<Error> errors, Exception ex)
-        {
-            switch (statusCode.IsSuccessCode)
-            {
-                case true:
-                    if ((errors != null && errors.Any()) || ex != null)
-                    {
-                        throw new InvalidOperationException("Unable to create a successful output that contains an error or exception.");
-                    }
-                    break;
-                case false:
-                    if ((errors == null || !errors.Any()) && ex == null)
-                    {
-                        throw new InvalidOperationException("Unable to create an error output that contains no error information.");
-                    }
-                    break;
             }
         }
 

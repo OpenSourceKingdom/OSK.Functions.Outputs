@@ -3,8 +3,8 @@
 namespace OSK.Functions.Outputs.Abstractions
 {
     [HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
-    public interface IOutput<TValue>: IOutput
+    public interface IOutputResponse<TValue>: IOutputResponse
     {
-        TValue Value { get; }
+        new IOutput<TValue>[] Outputs { get; }
     }
 }

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OSK.Functions.Outputs.Abstractions
 {
-    public struct ErrorInformation
+    public readonly struct ErrorInformation
     {
         #region Variables
 
-        public Exception Exception { get; set; }
+        public Exception Exception { get; }
 
-        public IReadOnlyCollection<Error> Errors { get; set; }
+        public Error? Error { get; }
 
         #endregion
 
@@ -19,15 +17,12 @@ namespace OSK.Functions.Outputs.Abstractions
         public ErrorInformation(Exception exception)
         {
             Exception = exception;
-            Errors = Enumerable.Empty<Error>().ToList();
         }
 
-        public ErrorInformation(IEnumerable<Error> errors)
+        public ErrorInformation(Error error)
         {
-            Errors = errors.ToList();
-            Exception = null;
+            Error = error;
         }
-
 
         #endregion
     }

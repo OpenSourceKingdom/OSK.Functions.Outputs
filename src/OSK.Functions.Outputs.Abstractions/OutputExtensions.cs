@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace OSK.Functions.Outputs.Abstractions
+﻿namespace OSK.Functions.Outputs.Abstractions
 {
     public static class OutputExtensions
     {
@@ -8,17 +6,17 @@ namespace OSK.Functions.Outputs.Abstractions
         /// This will generate an error string based on the error information; i.e. consilidating multiple errors into a single error string, exception message into one, etc. 
         /// </summary>
         /// <param name="output">The output object to generate an error string for</param>
-        /// <param name="separator">The delimeter between error messages, if multiple exist on the output</param>
         /// <returns>A single consolidated error string for the output</returns>
-        public static string GetErrorString(this IOutput output, string separator = ",")
+        public static string GetErrorString(this IOutput output)
         {
-            if (output.ErrorInformation == null)
+            if (output.ErrorInformation?.Exception is null
+                && output.ErrorInformation?.Error is null)
             {
                 return string.Empty;
             }
 
             return output.ErrorInformation.Value.Exception == null
-                ? string.Join(separator, output.ErrorInformation.Value.Errors.Select(e => e.Message))
+                ? output.ErrorInformation.Value.Error.Value.Message
                 : output.ErrorInformation.Value.Exception.Message;
         }
     }

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<LangVersion>12</LangVersion>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Description>Provides an abstraction for a .NET mechanism that returns outputs or error information to callers in a simple to use and consolidated way.</Description>
 		<PackageTags>OpenSourceKingdom, OpenSource, Functions, Outputs, Result, Error, Response, Abstraction</PackageTags>
@@ -16,11 +17,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>		
-		<PackageReference Include="OSK.Hexagonal.MetaData" Version="0.0.1" />
+		<PackageReference Include="Nullable" Version="1.3.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>		
+		<PackageReference Include="OSK.Hexagonal.MetaData" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	
 </Project>

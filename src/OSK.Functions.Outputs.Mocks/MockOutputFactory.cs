@@ -1,87 +1,35 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OSK.Functions.Outputs.Mocks
 {
     public class MockOutputFactory : IOutputFactory
     {
-        #region IOutputFactory
-
-        public IOutput Create(OutputStatusCode statusCode)
+        public IOutputResponseBuilder BuildResponse()
         {
-            return CreateMockOutput(statusCode, null, null);
+            return new OutputResponseBuilder(this);
         }
 
-        public IOutput Create(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public IOutputResponseBuilder<TValue> BuildResponse<TValue>()
         {
-            return CreateMockOutput(statusCode, null, errors);
+            return new OutputResponseBuilder<TValue>(this);
         }
 
-        public IOutput Create(OutputStatusCode statusCode, Exception ex)
+        public IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation, OutputDetails? advancedDetails)
         {
-            return CreateMockOutput(statusCode, ex, null);
+            throw new NotImplementedException();
         }
 
-        public IOutput<TValue> Create<TValue>(TValue value, OutputStatusCode statusCode)
+        public IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, ErrorInformation? errorInformation,
+            OutputDetails? advancedDetails)
         {
-            return CreateMockOutput(value, statusCode, null, null);
+            throw new NotImplementedException();
         }
 
-        public IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public IPaginatedOutput<TValue> CreatePage<TValue>(IEnumerable<TValue> values, long skip, long take, long? total)
         {
-            return CreateMockOutput(statusCode, null, errors).AsType<TValue>();
+            throw new NotImplementedException();
         }
-
-        public IOutput<TValue> Create<TValue>(OutputStatusCode statusCode, Exception ex)
-        {
-            return CreateMockOutput(statusCode, ex, null).AsType<TValue>();
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private MockOutput<T> CreateMockOutput<T>(T value, OutputStatusCode statusCode, Exception ex, IEnumerable<Error> errors)
-        {
-            ErrorInformation? errorInformation = null;
-            if (ex != null)
-            {
-                errorInformation = new ErrorInformation(ex);
-            }
-            else if (errors != null && errors.Any())
-            {
-                errorInformation = new ErrorInformation(errors);
-            }
-
-            return new MockOutput<T>()
-            {
-                Code = statusCode,
-                ErrorInformation = errorInformation,
-                Value = value
-            };
-        }
-
-        private MockOutput CreateMockOutput(OutputStatusCode statusCode, Exception ex, IEnumerable<Error> errors)
-        {
-            ErrorInformation? errorInformation = null;
-            if (ex != null)
-            {
-                errorInformation = new ErrorInformation(ex);
-            }
-            else if (errors != null && errors.Any())
-            {
-                errorInformation = new ErrorInformation(errors);
-            }
-
-            return new MockOutput()
-            {
-                Code = statusCode,
-                ErrorInformation = errorInformation
-            };
-        }
-
-        #endregion
     }
 }

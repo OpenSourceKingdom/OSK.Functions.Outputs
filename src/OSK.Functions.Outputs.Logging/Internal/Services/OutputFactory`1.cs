@@ -1,8 +1,6 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
 using OSK.Functions.Outputs.Internal.Services;
 using OSK.Functions.Outputs.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
 
 namespace OSK.Functions.Outputs.Logging.Internal.Services
 {
@@ -10,47 +8,19 @@ namespace OSK.Functions.Outputs.Logging.Internal.Services
     {
         #region IOutputFactory
 
-        public override IOutput Create(OutputStatusCode statusCode)
+        public override IOutput CreateOutput(OutputStatusCode statusCode, ErrorInformation? errorInformation,
+            OutputDetails? advancedDetails)
         {
-            var output = base.Create(statusCode);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
-
+            var output = base.CreateOutput(statusCode, errorInformation, advancedDetails);
+            LogOutput(output);
             return output;
         }
 
-        public override IOutput Create(OutputStatusCode statusCode, IEnumerable<Error> errors)
+        public override IOutput<TValue> CreateOutput<TValue>(TValue value, OutputStatusCode statusCode, 
+            ErrorInformation? errorInformation, OutputDetails? advancedDetails)
         {
-            var output = base.Create(statusCode, errors);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
-
-            return output;
-        }
-
-        public override IOutput Create(OutputStatusCode statusCode, Exception ex)
-        {
-            var output = base.Create(statusCode, ex);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
-
-            return output;
-        }
-
-        public override IOutput<TValue> Create<TValue>(TValue value, OutputStatusCode statusCode)
-        {
-            var output = base.Create(value, statusCode);
-            if (!output.IsSuccessful)
-            {
-                LogOutput(output);
-            }
-
+            var output = base.CreateOutput(value, statusCode, errorInformation, advancedDetails);
+            LogOutput(output);
             return output;
         }
 

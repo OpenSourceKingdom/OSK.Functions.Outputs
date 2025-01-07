@@ -16,9 +16,8 @@
 		</PackageReference>
 	</ItemGroup>
 
-
 	<ItemGroup>
-		<ProjectReference Include="..\OSK.Functions.Outputs\OSK.Functions.Outputs.csproj" />
+	  <ProjectReference Include="..\OSK.Functions.Outputs.Logging\OSK.Functions.Outputs.Logging.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -16,9 +16,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<ProjectReference Include="..\OSK.Functions.Outputs.Abstractions\OSK.Functions.Outputs.Abstractions.csproj" />
 		<ProjectReference Include="..\OSK.Functions.Outputs.Logging.Abstractions\OSK.Functions.Outputs.Logging.Abstractions.csproj" />
+		<ProjectReference Include="..\OSK.Functions.Outputs\OSK.Functions.Outputs.csproj" />
 	</ItemGroup>
 
 </Project>

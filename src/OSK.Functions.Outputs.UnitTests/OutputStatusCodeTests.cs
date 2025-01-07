@@ -1,5 +1,4 @@
 ﻿using OSK.Functions.Outputs.Abstractions;
-using System.Net;
 using Xunit;
 
 namespace OSK.Functions.Outputs.UnitTests
@@ -12,39 +11,39 @@ namespace OSK.Functions.Outputs.UnitTests
         public void ToString_NoOrigination_ConvertsToExpectedStatusString()
         {
             // Arrange
-            var outputStatus = new OutputStatusCode(HttpStatusCode.Accepted, DetailCode.DownStreamError);
+            var details = new OutputStatusCode(OutputSpecificityCode.Accepted);
 
             // Act
-            var str = outputStatus.ToString();
+            var str = details.ToString();
 
             // Assert
-            Assert.Equal("202.1", str);
+            Assert.Equal($"{(int)OutputSpecificityCode.Accepted}", str);
         }
 
         [Fact]
         public void StatusCodeString_IncludesOrigination_ShouldNotIncludeOrigination_ConvertsToExpectedStatusCode()
         {
             // Arrange
-            var outputStatus = new OutputStatusCode(HttpStatusCode.OK, DetailCode.None, "Test Library");
+            var details = new OutputStatusCode(OutputSpecificityCode.Success, "Test Library");
 
             // Act
-            var str = outputStatus.ToString(false);
+            var str = details.ToString(false);
 
             // Assert
-            Assert.Equal("200.0", str);
+            Assert.Equal($"{(int)OutputSpecificityCode.Success}", str);
         }
 
         [Fact]
         public void StatusCodeString_IncludesOrigination_ShouldIncludeOrigination_ConvertsToExpectedStatusCode()
         {
             // Arrange
-            var outputStatus = new OutputStatusCode(HttpStatusCode.BadGateway, DetailCode.DownStreamError, "Test Library");
+            var details = new OutputStatusCode(OutputSpecificityCode.ThirdPartyServiceFailure, "Test Library");
 
             // Act
-            var str = outputStatus.ToString(true);
+            var str = details.ToString(true);
 
             // Assert
-            Assert.Equal("502.1,Test Library", str);
+            Assert.Equal($"{(int)OutputSpecificityCode.ThirdPartyServiceFailure},Test Library", str);
         }
 
         #endregion
@@ -52,40 +51,49 @@ namespace OSK.Functions.Outputs.UnitTests
         #region Constructor(string)
 
         [Theory]
-        [InlineData(HttpStatusCode.OK, DetailCode.None)]
-        public void OutputStatusCode_Constructor_String_StatusStringNoOrigination_ReturnsExpectedOutputStatus(HttpStatusCode statusCode,
-            DetailCode detailCode)
+        [InlineData(OutputSpecificityCode.Success)]
+        public void OutputDetails_Constructor_String_StatusStringNoOrigination_ReturnsExpectedStatusCode(OutputSpecificityCode specificityCode)
         {
             // Arrange
-            var outputStatus = new OutputStatusCode(statusCode, detailCode);
-            var str = outputStatus.ToString();
+            var details = new OutputStatusCode(specificityCode);
+            var str = details.ToString();
 
             // Act
-            var newStatus = OutputStatusCode.Parse(str);
+            var newDetails = OutputStatusCode.Parse(str);
 
             // Assert
-            Assert.Equal(statusCode, newStatus.StatusCode);
-            Assert.Equal(detailCode, newStatus.DetailCode);
+            Assert.Equal(specificityCode, newDetails.SpecificityCode);
             // No origination source was included in the ToString, it should be the default
-            Assert.Equal(OutputStatusCode.DefaultSource, newStatus.OriginationSource);
+            Assert.Equal(OutputStatusCode.DefaultSource, newDetails.OriginationSource);
         }
 
         [Theory]
-        [InlineData(HttpStatusCode.OK, DetailCode.None)]
-        public void OutputStatusCode_Constructor_String_StatusStringHasOrigination_ReturnsExpectedOutputStatus(HttpStatusCode statusCode,
-            DetailCode detailCode)
+        [InlineData(OutputSpecificityCode.Created)]
+        public void OutputDetails_Constructor_String_StatusStringHasOrigination_ReturnsExpectedStatusCode(OutputSpecificityCode spcecificityCode)
         {
             // Arrange
-            var outputStatus = new OutputStatusCode(statusCode, detailCode, "Hello World");
-            var str = outputStatus.ToString(true);
+            var details = new OutputStatusCode(spcecificityCode, "Hello World");
+            var str = details.ToString(true);
 
             // Act
-            var newStatus = OutputStatusCode.Parse(str);
+            var newDetails = OutputStatusCode.Parse(str);
 
             // Assert
-            Assert.Equal(statusCode, newStatus.StatusCode);
-            Assert.Equal(detailCode, newStatus.DetailCode);
-            Assert.Equal("Hello World", newStatus.OriginationSource);
+            Assert.Equal(spcecificityCode, newDetails.SpecificityCode);
+            Assert.Equal("Hello World", newDetails.OriginationSource);
+        }
+
+        [Fact]
+        public void OutputDetails_Constructor_String_SpecifictyCodeNotValidValue_ReturnsDetailsWithUnRecognizedSpecificityCode()
+        {
+            // Arrange
+            var details = "918";
+
+            // Act
+            var newDetails = OutputStatusCode.Parse(details);
+
+            // Assert
+            Assert.Equal(OutputSpecificityCode.SpecificityNotRecognized, newDetails.SpecificityCode);
         }
 
         #endregion
