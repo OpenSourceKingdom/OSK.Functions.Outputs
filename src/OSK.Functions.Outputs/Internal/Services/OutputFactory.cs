@@ -27,12 +27,12 @@ namespace OSK.Functions.Outputs.Internal.Services
             return output;
         }
 
-        public IOutputResponseBuilder BuildOutput()
+        public IOutputResponseBuilder BuildResponse()
         {
             return new OutputResponseBuilder(this);
         }
 
-        public IOutputResponseBuilder<TValue> BuildOutput<TValue>()
+        public IOutputResponseBuilder<TValue> BuildResponse<TValue>()
         {
             return new OutputResponseBuilder<TValue>(this);
         }

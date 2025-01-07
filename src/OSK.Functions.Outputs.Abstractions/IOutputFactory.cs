@@ -11,14 +11,14 @@ namespace OSK.Functions.Outputs.Abstractions
         /// be added to an output response by the library, as well as an output aggregation response
         /// </summary>
         /// <returns>A response builder</returns>
-        IOutputResponseBuilder BuildOutput();
+        IOutputResponseBuilder BuildResponse();
 
         /// <summary>
         /// Provides a mechanism for building an <see cref="IOutputResponse{TValue}"/>. This provides access to some extra data that can
         /// be added to an output response by the library, as well as an output aggregation response
         /// </summary>
         /// <returns>A response builder</returns>
-        IOutputResponseBuilder<TValue> BuildOutput<TValue>();
+        IOutputResponseBuilder<TValue> BuildResponse<TValue>();
 
         /// <summary>
         /// Creates a basic output object.
