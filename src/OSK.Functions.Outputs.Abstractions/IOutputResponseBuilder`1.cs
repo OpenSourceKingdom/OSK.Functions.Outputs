@@ -12,9 +12,9 @@ namespace OSK.Functions.Outputs.Abstractions
 
         IOutputResponseBuilder<TValue> WithOrigination(string originationSource);
 
-        IOutputResponseBuilder<TValue> AddException(Exception exception);
+        IOutputResponseBuilder<TValue> AddException(Exception exception, TValue value = default);
 
-        IOutputResponseBuilder<TValue> AddError(string error, OutputSpecificityCode specificityCode);
+        IOutputResponseBuilder<TValue> AddError(string error, OutputSpecificityCode specificityCode, TValue value = default);
 
         IOutputResponseBuilder<TValue> AddSuccess(TValue value, OutputSpecificityCode specificityCode = OutputSpecificityCode.Success);
 

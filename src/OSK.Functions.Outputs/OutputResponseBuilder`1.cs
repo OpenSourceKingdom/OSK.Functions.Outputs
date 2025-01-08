@@ -37,14 +37,14 @@ namespace OSK.Functions.Outputs
             return this;
         }
 
-        public IOutputResponseBuilder<TValue> AddException(Exception exception)
+        public IOutputResponseBuilder<TValue> AddException(Exception exception, TValue value = default)
         {
             if (exception is null)
             {
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var output = factory.CreateOutput<TValue>(default, 
+            var output = factory.CreateOutput(value, 
                 new OutputStatusCode(OutputSpecificityCode.UnknownError, _originationSource),
                 new ErrorInformation(exception), 
                 GetDetails());
@@ -54,9 +54,9 @@ namespace OSK.Functions.Outputs
             return this;
         }
 
-        public IOutputResponseBuilder<TValue> AddError(string error, OutputSpecificityCode specificityCode)
+        public IOutputResponseBuilder<TValue> AddError(string error, OutputSpecificityCode specificityCode, TValue value = default)
         {
-            var output = factory.CreateOutput<TValue>(default, 
+            var output = factory.CreateOutput(value, 
                 new OutputStatusCode(specificityCode, _originationSource), 
                 new ErrorInformation(new Error(error)),
                 GetDetails());
